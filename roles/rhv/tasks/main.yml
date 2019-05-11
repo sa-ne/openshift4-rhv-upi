@@ -1,0 +1,144 @@
+---
+- name: Create VMs
+  ovirt_vm:
+    auth:
+      username: "{{ rhv_username }}"
+      password: "{{ rhv_password }}"
+      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
+      insecure: True
+    state: stopped
+    delete_protected: False
+    name: "{{ item }}"
+    cluster: "{{ rhv_cluster }}"
+    type: server
+    memory: "{{ hostvars[item].memory }}"
+    cpu_sockets: "{{ hostvars[item].sockets }}"
+    cpu_cores: "{{ hostvars[item].cores }}"
+    cd_iso: "{{ hostvars[item].iso }}"
+    boot_devices:
+      - hd
+      - cdrom
+  tags:
+    - create_vms
+  register: ovirt_vm_results
+  with_items:
+    - "{{ groups[provision_group] }}"
+
+- name: Debug ovirt_vm_results
+  debug:
+    var: ovirt_vm_results
+    verbosity: 2
+
+- name: Get VM Facts
+  ovirt_vm_facts:
+    auth:
+      username: "{{ rhv_username }}"
+      password: "{{ rhv_password }}"
+      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
+      insecure: True
+    fetch_nested: True
+    nested_attributes: True
+    pattern: name={{ item }} and cluster={{ rhv_cluster }}
+  with_items:
+    - "{{ groups[provision_group] }}"
+  register: ovirt_vm_facts_results
+
+- name: Debug ovirt_vm_facts_results
+  debug:
+    var: ovirt_vm_facts_results
+    verbosity: 2
+
+- name: Combine Applicable Disks & Hostnames into Dictionary for Easy Lookup
+  set_fact:
+    disk_name_dict: >-
+      {{
+        disk_name_dict | default([]) +
+        [
+          {
+            'name': item,
+            'disks': hostvars[item].disks | default([])
+          }
+        ]
+      }}
+  tags:
+    - disks
+  with_items:
+    - "{{ groups[provision_group] }}"
+
+- name: Add Disks to VMs
+  ovirt_disk:
+    auth:
+      username: "{{ rhv_username }}"
+      password: "{{ rhv_password }}"
+      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
+      insecure: True
+    name: "{{ item.0.name }}-{{ item.1.name }}"
+    bootable: "{{ item.1.bootable }}"
+    vm_name: "{{ item.0.name }}"
+    size: "{{ item.1.size }}"
+    format: "{{ item.1.format }}"
+    interface: "{{ item.1.interface }}"
+    storage_domain: "{{ item.1.storage_domain }}"
+  tags:
+    - disks
+  with_subelements:
+    - "{{ disk_name_dict }}"
+    - disks
+    - skip_missing: False
+
+- name: Combine Applicable NICs & Hostnames into Dictionary for Easy Lookup
+  set_fact:
+    nic_name_dict: >-
+      {{
+        nic_name_dict | default([]) +
+        [
+          {
+            'name': item,
+            'nics': hostvars[item].nics | default([])
+          }
+        ]
+      }}
+  with_items:
+    - "{{ groups[provision_group] }}"
+
+- name: Add NICs to VMs
+  ovirt_nic:
+    auth:
+      username: "{{ rhv_username }}"
+      password: "{{ rhv_password }}"
+      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
+      insecure: True
+    name: "{{ item.1.name }}"
+    interface: "{{ item.1.interface }}"
+    network: "{{ item.1.network }}"
+    profile: "{{ item.1.network }}"
+    vm: "{{ item.0.name }}"
+  tags:
+    - create_nics
+  with_subelements:
+    - "{{ nic_name_dict }}"
+    - nics
+    - skip_missing: False
+
+- name: Get VM NIC Facts
+  ovirt_nic_facts:
+    auth:
+      username: "{{ rhv_username }}"
+      password: "{{ rhv_password }}"
+      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
+      insecure: True
+    name: eth0
+    vm: "{{ item }}"
+  register: ovirt_nic_facts_results
+  with_items:
+    - "{{ groups[provision_group] }}"
+
+- name: Build VM/eth0 Results for DHCP
+  set_fact:
+    host_mac_list: "{{ host_mac_list | default([]) }} + [ '{{ item.item }} - {{ item.ansible_facts.ovirt_nics[0].mac.address }}' ]"
+  with_items:
+    - "{{ ovirt_nic_facts_results.results }}"
+
+- name: Show Host MAC List
+  debug:
+    var: host_mac_list

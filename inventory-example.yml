@@ -1,0 +1,131 @@
+---
+all:
+  vars:
+    provision_group: openshift
+    cluster_name: rhv
+    base_domain: ocp4.pwc.umbrella.local
+    iso_bootstrap: rhcos-410.8.20190418.1-installer-bootstrap.iso
+    iso_master: rhcos-410.8.20190418.1-installer-master.iso
+    iso_worker: rhcos-410.8.20190418.1-installer-worker.iso
+  children:
+    openshift:
+      hosts:
+        bootstrap.rhv.ocp4.pwc.umbrella.local:
+          search: rhv.ocp4.pwc.umbrella.local
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_bootstrap }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 140GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        master1.rhv.ocp4.pwc.umbrella.local:
+          search: rhv.ocp4.pwc.umbrella.local
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_master }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 140GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        master2.rhv.ocp4.pwc.umbrella.local:
+          search: rhv.ocp4.pwc.umbrella.local
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_master }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 140GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        master3.rhv.ocp4.pwc.umbrella.local:
+          search: rhv.ocp4.pwc.umbrella.local
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_master }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 140GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        worker1.rhv.ocp4.pwc.umbrella.local:
+          search: rhv.ocp4.pwc.umbrella.local
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_worker }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 140GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        worker2.rhv.ocp4.pwc.umbrella.local:
+          search: rhv.ocp4.pwc.umbrella.local
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_worker }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 140GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        worker3.rhv.ocp4.pwc.umbrella.local:
+          search: rhv.ocp4.pwc.umbrella.local
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_worker }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 140GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio

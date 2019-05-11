@@ -1,0 +1,8 @@
+---
+- name: Provision OpenShift 4 Environment
+  hosts: localhost
+  vars_files:
+    - vault.yml
+  roles:
+    - role: idm
+    - role: rhv
