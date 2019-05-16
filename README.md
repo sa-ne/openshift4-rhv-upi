@@ -55,7 +55,7 @@ openshift-installer create ignition-configs --dir=/home/chris/openshift4/rhv
 
 ## Staging Content
 
-On our web server, download the CoreOS image to the document root (assuming /var/www/html).
+On our web server, download the CoreOS image to the document root (assuming `/var/www/html`).
 
 ```bash
 sudo curl -JLo /var/www/html/rhcos-410.8.20190418.1-metal-bios.raw.gz https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.1/latest/rhcos-410.8.20190418.1-metal-bios.raw.gz
@@ -69,7 +69,7 @@ __Kernel Parameters__
 
 * coreos.inst=yes
 * coreos.inst.install\_dev=sda
-* coreos.inst.image\_url=\<bare\_metal\_image\_URL\>
+* coreos.inst.image\_url=http://example.com/rhcos-410.8.20190418.1-metal-bios.raw.gz
 * coreos.inst.ignition\_url=http://example.com/config.ign
 
 ### Obtaining Red Hat CoreOS ISO
