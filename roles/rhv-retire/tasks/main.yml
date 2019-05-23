@@ -1,0 +1,19 @@
+---
+- name: Delete VMs
+  ovirt_vm:
+    auth:
+      username: "{{ rhv_username }}"
+      password: "{{ rhv_password }}"
+      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
+      insecure: true
+    state: absent
+    name: "{{ item }}"
+    cluster: "{{ rhv_cluster }}"
+  register: ovirt_vm_results
+  with_items:
+    - "{{ groups[provision_group] }}"
+
+- name: Debug ovirt_vm_results
+  debug:
+    var: ovirt_vm_results
+    verbosity: 2
