@@ -34,6 +34,6 @@
     - role: rhv-retire
       tags:
         - rhv
-#    - role: ipa-retire
-#      tags:
-#        - ipa
+    - role: ipa-retire
+      tags:
+        - ipa

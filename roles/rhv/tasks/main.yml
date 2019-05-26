@@ -8,7 +8,7 @@
       insecure: True
     state: stopped
     delete_protected: False
-    name: "{{ item }}"
+    name: "{{ item }}.{{ base_domain }}"
     cluster: "{{ rhv_cluster }}"
     type: server
     memory: "{{ hostvars[item].memory }}"
@@ -38,7 +38,7 @@
       insecure: True
     fetch_nested: True
     nested_attributes: True
-    pattern: name={{ item }} and cluster={{ rhv_cluster }}
+    pattern: name={{ item }}.{{ base_domain }} and cluster={{ rhv_cluster }}
   with_items:
     - "{{ groups[provision_group] }}"
   register: ovirt_vm_facts_results
@@ -72,7 +72,7 @@
       password: "{{ rhv_password }}"
       url: "https://{{ rhv_hostname }}/ovirt-engine/api"
       insecure: True
-    name: "{{ item.0.name }}-{{ item.1.name }}"
+    name: "{{ item.0.name }}.{{ base_domain }}-{{ item.1.name }}"
     bootable: "{{ item.1.bootable }}"
     vm_name: "{{ item.0.name }}"
     size: "{{ item.1.size }}"
