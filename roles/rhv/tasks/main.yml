@@ -74,7 +74,7 @@
       insecure: True
     name: "{{ item.0.name }}.{{ base_domain }}-{{ item.1.name }}"
     bootable: "{{ item.1.bootable }}"
-    vm_name: "{{ item.0.name }}"
+    vm_name: "{{ item.0.name }}.{{ base_domain }}"
     size: "{{ item.1.size }}"
     format: "{{ item.1.format }}"
     interface: "{{ item.1.interface }}"
@@ -112,7 +112,7 @@
     interface: "{{ item.1.interface }}"
     network: "{{ item.1.network }}"
     profile: "{{ item.1.network }}"
-    vm: "{{ item.0.name }}"
+    vm: "{{ item.0.name }}.{{ base_domain }}"
   tags:
     - create_nics
   with_subelements:
@@ -128,14 +128,14 @@
       url: "https://{{ rhv_hostname }}/ovirt-engine/api"
       insecure: True
     name: eth0
-    vm: "{{ item }}"
+    vm: "{{ item }}.{{ base_domain }}"
   register: ovirt_nic_facts_results
   with_items:
     - "{{ groups[provision_group] }}"
 
 - name: Build VM/eth0 Results for DHCP
   set_fact:
-    host_mac_list: "{{ host_mac_list | default([]) }} + [ '{{ item.item }} - {{ item.ansible_facts.ovirt_nics[0].mac.address }}' ]"
+    host_mac_list: "{{ host_mac_list | default([]) }} + [ '{{ item.item }}.{{ base_domain }} - {{ item.ansible_facts.ovirt_nics[0].mac.address }}' ]"
   with_items:
     - "{{ ovirt_nic_facts_results.results }}"
 

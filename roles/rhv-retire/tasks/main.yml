@@ -7,7 +7,7 @@
       url: "https://{{ rhv_hostname }}/ovirt-engine/api"
       insecure: true
     state: absent
-    name: "{{ item }}"
+    name: "{{ item }}.{{ base_domain }}"
     cluster: "{{ rhv_cluster }}"
   register: ovirt_vm_results
   with_items:
