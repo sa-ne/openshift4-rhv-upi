@@ -1,21 +1,18 @@
 ---
 all:
   vars:
-    provision_group: openshift
-    cluster_name: rhv
-    base_domain: ocp4.pwc.umbrella.local
-    iso_bootstrap: rhcos-410.8.20190418.1-installer-bootstrap.iso
-    iso_master: rhcos-410.8.20190418.1-installer-master.iso
-    iso_worker: rhcos-410.8.20190418.1-installer-worker.iso
+    provision_group: pg
+    iso: rhcos-410.8.20190520.0-installer-auto.iso
+    base_domain: rhv-upi.ocp.pwc.umbrella.local
   children:
-    openshift:
+    pg:
       hosts:
-        bootstrap.rhv.ocp4.pwc.umbrella.local:
-          search: rhv.ocp4.pwc.umbrella.local
+        bootstrap:
+          ip: 172.16.10.150
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso_bootstrap }}"
+          iso: "{{ iso }}"
           disks:
           - name: os
             bootable: yes
@@ -27,12 +24,12 @@ all:
           - name: eth0
             network: lab
             interface: virtio
-        master1.rhv.ocp4.pwc.umbrella.local:
-          search: rhv.ocp4.pwc.umbrella.local
+        master0:
+          ip: 172.16.10.151
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso_master }}"
+          iso: "{{ iso }}"
           disks:
           - name: os
             bootable: yes
@@ -44,12 +41,12 @@ all:
           - name: eth0
             network: lab
             interface: virtio
-        master2.rhv.ocp4.pwc.umbrella.local:
-          search: rhv.ocp4.pwc.umbrella.local
+        master1:
+          ip: 172.16.10.152
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso_master }}"
+          iso: "{{ iso }}"
           disks:
           - name: os
             bootable: yes
@@ -61,12 +58,12 @@ all:
           - name: eth0
             network: lab
             interface: virtio
-        master3.rhv.ocp4.pwc.umbrella.local:
-          search: rhv.ocp4.pwc.umbrella.local
+        master2:
+          ip: 172.16.10.153
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso_master }}"
+          iso: "{{ iso }}"
           disks:
           - name: os
             bootable: yes
@@ -78,12 +75,12 @@ all:
           - name: eth0
             network: lab
             interface: virtio
-        worker1.rhv.ocp4.pwc.umbrella.local:
-          search: rhv.ocp4.pwc.umbrella.local
+        worker0:
+          ip: 172.16.10.154
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso_worker }}"
+          iso: "{{ iso }}"
           disks:
           - name: os
             bootable: yes
@@ -95,12 +92,12 @@ all:
           - name: eth0
             network: lab
             interface: virtio
-        worker2.rhv.ocp4.pwc.umbrella.local:
-          search: rhv.ocp4.pwc.umbrella.local
+        worker1:
+          ip: 172.16.10.155
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso_worker }}"
+          iso: "{{ iso }}"
           disks:
           - name: os
             bootable: yes
@@ -112,12 +109,12 @@ all:
           - name: eth0
             network: lab
             interface: virtio
-        worker3.rhv.ocp4.pwc.umbrella.local:
-          search: rhv.ocp4.pwc.umbrella.local
+        worker2:
+          ip: 172.16.10.156
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso_worker }}"
+          iso: "{{ iso }}"
           disks:
           - name: os
             bootable: yes

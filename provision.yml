@@ -4,5 +4,9 @@
   vars_files:
     - vault.yml
   roles:
-    - role: idm
+    - role: ipa
+      tags:
+        - ipa
     - role: rhv
+      tags:
+        - rhv
