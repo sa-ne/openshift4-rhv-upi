@@ -2,9 +2,16 @@
 all:
   vars:
     provision_group: pg
-    iso: rhcos-410.8.20190520.0-installer-auto.iso
+    iso_name: rhcos-410.8.20190520.0-installer-auto.iso
     base_domain: rhv-upi.ocp.pwc.umbrella.local
   children:
+    webserver:
+      hosts:
+        lb.rhv-upi.ocp.pwc.umbrella.local:
+          httpd_port: 8888
+    loadbalancer:
+      hosts:
+        lb.rhv-upi.ocp.pwc.umbrella.local:
     pg:
       hosts:
         bootstrap:
@@ -12,7 +19,7 @@ all:
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso }}"
+          iso: "{{ iso_name }}"
           disks:
           - name: os
             bootable: yes
@@ -29,7 +36,7 @@ all:
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso }}"
+          iso: "{{ iso_name }}"
           disks:
           - name: os
             bootable: yes
@@ -46,7 +53,7 @@ all:
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso }}"
+          iso: "{{ iso_name }}"
           disks:
           - name: os
             bootable: yes
@@ -63,7 +70,7 @@ all:
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso }}"
+          iso: "{{ iso_name }}"
           disks:
           - name: os
             bootable: yes
@@ -80,7 +87,7 @@ all:
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso }}"
+          iso: "{{ iso_name }}"
           disks:
           - name: os
             bootable: yes
@@ -97,7 +104,7 @@ all:
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso }}"
+          iso: "{{ iso_name }}"
           disks:
           - name: os
             bootable: yes
@@ -114,7 +121,24 @@ all:
           memory: 24GiB
           sockets: 1
           cores: 4
-          iso: "{{ iso }}"
+          iso: "{{ iso_name }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 140GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        worker3:
+          ip: 172.16.10.157
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_name }}"
           disks:
           - name: os
             bootable: yes

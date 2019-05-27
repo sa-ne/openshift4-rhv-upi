@@ -11,6 +11,25 @@ This repository contains a set of playbooks to help facilitate the deployment of
 * Generation of HAProxy Load Balancer Configs
 * Generation of dhcpd.conf for Static IP Assignment Based on MAC Addresses in RHV
 
+## Requirements
+
+To leverage the automation in this guide you need the following:
+
+* RHV Environment (tested on 4.2)
+* IdM Server with DNS Enabled
+ * Must have Proper Forward/Reverse Zones Configured
+* RHEL 7 Server which will act as a Web Server, Load Balancer and DHCP server
+
+### Naming Convention
+
+All hostnames must follow the following format:
+
+* bootstrap.\<base domain\>
+* master0.\<base domain\>
+* masterX.\<base domain\>
+* worker0.\<base domain\>
+* workerX.\<base domain\>
+
 ## Noted UPI Installation Issues
 
 * Bootstrap SSL Certificate is only valid for 24 hours
@@ -20,7 +39,27 @@ This repository contains a set of playbooks to help facilitate the deployment of
 
 Read through the [baremetal](https://docs.openshift.com/container-platform/4.1/installing/installing_bare_metal/installing-bare-metal.html) UPI installation documentation before proceeding.
 
+## Creating Inventory File for Ansible
+
+An example inventory file is included for Ansible (`inventory-example.yml`). Use this file as a baseline. Make sure to configure the appropriate number of master/worker nodes.
+
+Make sure to configure `iso_name` and `base_domain` variables appropriately. Under the `webserver` and `loadbalancer` group include the FQDN of each host. Also make sure you configure the `httpd_port` variable for the web server host. In this example, the web server and load balancer are the same host.
+
 ## Installing Web Server on Load Balancer
+
+The `install-webserver.yml` playbook will configure the following on your web server host:
+
+* Install `http`, `php` and `policycoreutils-python` Packages
+* Add `httpd_port` as SELinux type `httpd_port_t`
+* Install appropriate httpd.conf Based on Template
+* Install `ignition-downloader.php` PHP Script
+* Start/Enable `httpd` Service
+
+To configure the web server, run the `install-webserver.yml` playbook as follows (make sure your inventory file is correctly configured before running the playbook):
+
+```
+$ ansible-playbook -i inventory-example.yml -b install-webserver.yml
+```
 
 ## Creating Ignition Configs
 
@@ -148,6 +187,22 @@ Max brk space used 1c000
 Copy the ISO to your ISO domain in RHV. After that you can cleanup the /tmp directory by doing `rm -rf /tmp/rhcos*`.
 
 ## Creating Load Balancer w/ HAProxy
+
+The `install-haproxy.yml` playbook will configure the following on your load balancer host:
+
+* Install `haproxy` Package
+* Install `haproxy.cfg` Based on Template
+* Start/Enable `haproxy` Service
+
+The template for `haproxy.cfg` will generate the appropriate pools for master and worker nodes based on your Ansible inventory file.
+
+To configure HAProxy, run the `install-haproxy.yml` playbook as follows (make sure your inventory file is correctly configured before running the playbook):
+
+```
+$ ansible-playbook -i inventory-example.yml -b install-haproxy.yml
+```
+
+## Creating DHCP Server
 TODO
 
 ## Creating Environment in RHV
