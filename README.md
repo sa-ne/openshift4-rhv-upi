@@ -57,7 +57,7 @@ The `install-webserver.yml` playbook will configure the following on your web se
 
 To configure the web server, run the `install-webserver.yml` playbook as follows (make sure your inventory file is correctly configured before running the playbook):
 
-```
+```bash
 $ ansible-playbook -i inventory-example.yml -b install-webserver.yml
 ```
 
@@ -65,7 +65,8 @@ $ ansible-playbook -i inventory-example.yml -b install-webserver.yml
 
 Create a file called `install-config.yaml` similar to the one show below. This example shows 3 masters and 4 worker nodes.
 
-```apiVersion: v1
+```yaml
+apiVersion: v1
 baseDomain: rhv-upi.ocp.pwc.umbrella.local
 compute:
 - name: worker
@@ -129,7 +130,7 @@ A script is provided to recreate an ISO that will automatically boot with the ap
 
 Most parameters can be left alone. You WILL need to change at least the `KP_WEBSERVER` variable to point to the web server hosting your ignition configs and CoreOS image.
 
-```
+```bash
 VERSION=410.8.20190520.0
 ISO_SOURCE=/tmp/rhcos-$VERSION-installer.iso
 ISO_OUTPUT=/tmp/rhcos-$VERSION-installer-auto.iso
@@ -144,7 +145,7 @@ KP_BLOCK_DEVICE=sda
 
 Running the script (make sure to do this as root) should produce similar output:
 
-```
+```bash
 $ sudo ./iso-generator.sh 
 mount: /tmp/rhcos-410.8.20190520.0-installer: WARNING: device write-protected, mounted read-only.
 sending incremental file list
@@ -198,7 +199,7 @@ The template for `haproxy.cfg` will generate the appropriate pools for master an
 
 To configure HAProxy, run the `install-haproxy.yml` playbook as follows (make sure your inventory file is correctly configured before running the playbook):
 
-```
+```bash
 $ ansible-playbook -i inventory-example.yml -b install-haproxy.yml
 ```
 
