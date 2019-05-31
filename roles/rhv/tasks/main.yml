@@ -79,6 +79,7 @@
     format: "{{ item.1.format }}"
     interface: "{{ item.1.interface }}"
     storage_domain: "{{ item.1.storage_domain }}"
+    activate: true
   tags:
     - disks
   with_subelements:

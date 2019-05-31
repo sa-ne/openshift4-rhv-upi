@@ -1,0 +1,62 @@
+- name: Startup (install) Bootstrap Node
+  ovirt_vm:
+    auth:
+      username: "{{ rhv_username }}"
+      password: "{{ rhv_password }}"
+      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
+      insecure: True
+    name: "bootstrap.{{ base_domain }}"
+    state: running
+
+- name: Wait 30 Minutes for SSH on Bootstrap Node
+  wait_for:
+    host: "{{ hostvars['bootstrap'].ip }}"
+    port: 22
+    sleep: 10
+    timeout: 1800
+
+- name: Startup (install) Master Nodes
+  ovirt_vm:
+    auth:
+      username: "{{ rhv_username }}"
+      password: "{{ rhv_password }}"
+      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
+      insecure: True
+    name: "{{ item }}.{{ base_domain }}"
+    state: running
+  with_items:
+    - "{{ groups[provision_group] }}"
+  when: item is search("master")
+
+- name: Wait 30 Minutes for SSH on Master Nodes
+  wait_for:
+    host: "{{ hostvars[item].ip }}"
+    port: 22
+    sleep: 10
+    timeout: 1800
+  with_items:
+    - "{{ groups[provision_group] }}"
+  when: item is search("master")
+
+- name: Startup (install) Worker Nodes
+  ovirt_vm:
+    auth:
+      username: "{{ rhv_username }}"
+      password: "{{ rhv_password }}"
+      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
+      insecure: True
+    name: "{{ item }}.{{ base_domain }}"
+    state: running
+  with_items:
+    - "{{ groups[provision_group] }}"
+  when: item is search("worker")
+
+- name: Wait 30 Minutes for SSH on Worker Nodes
+  wait_for:
+    host: "{{ hostvars[item].ip }}"
+    port: 22
+    sleep: 10
+    timeout: 1800
+  with_items:
+    - "{{ groups[provision_group] }}"
+  when: item is search("worker")
