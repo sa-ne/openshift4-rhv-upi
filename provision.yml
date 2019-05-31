@@ -10,3 +10,17 @@
     - role: rhv
       tags:
         - rhv
+
+- name: Setup Loadbalancer Host
+  hosts: loadbalancer
+  become: yes
+  roles:
+    - role: dhcpd
+      tags:
+        - dhcpd
+    - role: haproxy
+      tags:
+        - haproxy
+    - role: httpd
+      tags:
+        - httpd

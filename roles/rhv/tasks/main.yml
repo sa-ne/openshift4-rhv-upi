@@ -133,12 +133,32 @@
   with_items:
     - "{{ groups[provision_group] }}"
 
-- name: Build VM/eth0 Results for DHCP
+- name: Combine Hostname/IP/MAC into Dictionary for Easy Lookup
   set_fact:
-    host_mac_list: "{{ host_mac_list | default([]) }} + [ '{{ item.item }}.{{ base_domain }} - {{ item.ansible_facts.ovirt_nics[0].mac.address }}' ]"
+    host_mac_list: >-
+      {{
+        host_mac_list | default([]) +
+        [
+          {
+            'name': item.item,
+            'mac': item.ansible_facts.ovirt_nics[0].mac.address,
+            'ip': hostvars[item.item]['ip']
+          }
+        ]
+      }}
   with_items:
     - "{{ ovirt_nic_facts_results.results }}"
 
-- name: Show Host MAC List
+- name: Debug host_mac_list
   debug:
     var: host_mac_list
+
+#- name: Build VM/eth0 Results for DHCP
+#  set_fact:
+#    host_mac_list: "{{ host_mac_list | default([]) }} + [ '{{ item.item }}.{{ base_domain }} - {{ item.ansible_facts.ovirt_nics[0].mac.address }}' ]"
+#  with_items:
+#    - "{{ ovirt_nic_facts_results.results }}"
+
+#- name: Show Host MAC List
+#  debug:
+#    var: host_mac_list

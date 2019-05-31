@@ -1,0 +1,20 @@
+- name: Install Packages
+  yum:
+    name:
+      - haproxy
+    state: latest
+
+- name: Copy haproxy.cfg Template
+  template:
+    src: templates/haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: 0644
+    setype: etc_t
+
+- name: Enable/Start httpd Service
+  systemd:
+    name: haproxy
+    state: started
+    enabled: yes

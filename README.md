@@ -70,10 +70,10 @@ apiVersion: v1
 baseDomain: rhv-upi.ocp.pwc.umbrella.local
 compute:
 - name: worker
-  replicas: 3
+  replicas: 4
 controlPlane:
   name: master
-  replicas: 4
+  replicas: 3
 metadata:
   name: rhv-upi
 networking:
