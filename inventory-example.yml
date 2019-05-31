@@ -4,6 +4,11 @@ all:
     provision_group: pg
     iso_name: rhcos-410.8.20190520.0-installer-auto.iso
     base_domain: rhv-upi.ocp.pwc.umbrella.local
+    dhcp_server_dns_servers: 172.16.10.11
+    dhcp_server_gateway: 172.16.10.254
+    dhcp_server_subnet_mask: 255.255.255.0
+    dhcp_server_subnet: 172.16.10.0
+    load_balancer_ip: 172.16.10.114
   children:
     webserver:
       hosts:
@@ -32,6 +37,7 @@ all:
             network: lab
             interface: virtio
         master0:
+          etcd_name: etcd-0
           ip: 172.16.10.151
           memory: 24GiB
           sockets: 1
@@ -49,6 +55,7 @@ all:
             network: lab
             interface: virtio
         master1:
+          etcd_name: etcd-1
           ip: 172.16.10.152
           memory: 24GiB
           sockets: 1
@@ -66,6 +73,7 @@ all:
             network: lab
             interface: virtio
         master2:
+          etcd_name: etcd-2
           ip: 172.16.10.153
           memory: 24GiB
           sockets: 1

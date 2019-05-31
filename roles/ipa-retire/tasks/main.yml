@@ -38,3 +38,43 @@
     state: absent
   with_items:
     - "{{ groups[provision_group] }}"
+
+- name: Delete api/api-int Records
+  ipa_dnsrecord:
+    name: "{{ item }}"
+    zone_name: "{{ base_domain }}"
+    record_type: A
+    record_value: "{{ load_balancer_ip }}"
+    ipa_host: "{{ ipa_hostname }}"
+    ipa_user: "{{ ipa_username }}"
+    ipa_pass: "{{ ipa_password }}"
+    state: absent
+  with_items:
+    - api
+    - api-int
+
+- name: Delete Wildcard for Applications
+  ipa_dnsrecord:
+    name: "*.apps"
+    zone_name: "{{ base_domain }}"
+    record_type: A
+    record_value: "{{ load_balancer_ip }}"
+    ipa_host: "{{ ipa_hostname }}"
+    ipa_user: "{{ ipa_username }}"
+    ipa_pass: "{{ ipa_password }}"
+    state: absent
+
+- name: Delete etcd-x Records
+  ipa_dnsrecord:
+    name: "{{ hostvars[item].etcd_name }}"
+    zone_name: "{{ base_domain }}"
+    record_type: A
+    record_value: "{{ hostvars[item].ip }}"
+    ipa_host: "{{ ipa_hostname }}"
+    ipa_user: "{{ ipa_username }}"
+    ipa_pass: "{{ ipa_password }}"
+    state: absent
+  with_items:
+    - "{{ groups[provision_group] }}"
+  when: item is search("master")
+

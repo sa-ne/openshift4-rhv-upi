@@ -61,3 +61,42 @@
     body_format: json
   with_items:
     - "{{ groups[provision_group] }}"
+
+- name: Create api/api-int Records
+  ipa_dnsrecord:
+    name: "{{ item }}"
+    zone_name: "{{ base_domain }}"
+    record_type: A
+    record_value: "{{ load_balancer_ip }}"
+    ipa_host: "{{ ipa_hostname }}"
+    ipa_user: "{{ ipa_username }}"
+    ipa_pass: "{{ ipa_password }}"
+    state: present
+  with_items:
+    - api
+    - api-int
+
+- name: Create Wildcard for Applications
+  ipa_dnsrecord:
+    name: "*.apps"
+    zone_name: "{{ base_domain }}"
+    record_type: A
+    record_value: "{{ load_balancer_ip }}"
+    ipa_host: "{{ ipa_hostname }}"
+    ipa_user: "{{ ipa_username }}"
+    ipa_pass: "{{ ipa_password }}"
+    state: present
+
+- name: Create etcd-x Records
+  ipa_dnsrecord:
+    name: "{{ hostvars[item].etcd_name }}"
+    zone_name: "{{ base_domain }}"    
+    record_type: A
+    record_value: "{{ hostvars[item].ip }}"
+    ipa_host: "{{ ipa_hostname }}"
+    ipa_user: "{{ ipa_username }}"
+    ipa_pass: "{{ ipa_password }}"
+    state: present
+  with_items:
+    - "{{ groups[provision_group] }}"
+  when: item is search("master")
