@@ -54,8 +54,8 @@ Read through the [baremetal](https://docs.openshift.com/container-platform/4.1/i
 
 Find a good working directory and clone this repository using the following command:
 
-```bash
-git clone https://github.com/sa-ne/openshift4-rhv-upi.git
+```shell
+$ git clone https://github.com/sa-ne/openshift4-rhv-upi.git
 ```
 
 ## Create DNS Zones in IdM
@@ -84,8 +84,8 @@ Under the `webserver` and `loadbalancer` group include the FQDN of each host. Al
 
 In the directory that contains your cloned copy of this git repo, create an Ansible vault called vault.yml as follows:
 
-```bash
-ansible-vault create vault.yml
+```shell
+$ ansible-vault create vault.yml
 ```
 
 The vault requires the following variables. Adjust the values to suit your environment.
@@ -105,8 +105,8 @@ ipa_password: "changeme"
 
 The OpenShift Installer releases are stored [here](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-install-linux-4.1.0-rc.5.tar.gz). Download the installer to your working directory as follows:
 
-```bash
-curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-install-linux-4.1.0-rc.5.tar.gz
+```shell
+$ curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-install-linux-4.1.0-rc.5.tar.gz
 ```
 
 Extract the archive and continue.
@@ -141,8 +141,8 @@ sshKey: 'ssh-rsa ... user@host'
 
 You will need to modify baseDomain, pullSecret and sshKey (be sure to use your _public_ key) with the appropriate values. Next, copy `install-config.yaml` into your working directory (`/home/chris/upi/rhv-upi` in this example) and run the OpenShift installer as follows to generate your Ignition configs.
 
-```bash
-openshift-installer create ignition-configs --dir=/home/chris/upi/rhv-upi
+```shell
+$ ./openshift-installer create ignition-configs --dir=/home/chris/upi/rhv-upi
 ```
 
 ## Staging Content
@@ -151,10 +151,12 @@ On our web server, download the CoreOS image to the document root (assuming `/va
 
 _NOTE: You may be wondering about SELinux contexts since httpd is not installed. Fear not, our playbooks will handle that during the installation phase._
 
-```bash
-mkdir -p /var/www/html
+```shell
+$ sudo mkdir -p /var/www/html
+```
 
-sudo curl -kLo /var/www/html/rhcos-410.8.20190520.0-metal-bios.raw.gz https://releases-art-jenkins.cloud.paas.upshift.redhat.com/storage/releases/ootpa/410.8.20190520.0/rhcos-410.8.20190520.0-metal-bios.raw.gz
+```shell
+$ sudo curl -kLo /var/www/html/rhcos-410.8.20190520.0-metal-bios.raw.gz https://releases-art-jenkins.cloud.paas.upshift.redhat.com/storage/releases/ootpa/410.8.20190520.0/rhcos-410.8.20190520.0-metal-bios.raw.gz
 ```
 
 Next copy bootstrap.ign, master.ign and worker.ign from your working directory to `/var/www/html` on your web server.
@@ -176,8 +178,8 @@ Note these parameters are for reference only. Specify the appropriate values for
 
 Download the ISO file as shown. Be sure to check the directory for the latest version.
 
-```bash
-curl -kJLo /tmp/rhcos-410.8.20190520.0-installer.iso https://releases-art-jenkins.cloud.paas.upshift.redhat.com/storage/releases/ootpa/410.8.20190520.0/rhcos-410.8.20190520.0-installer.iso
+```shell
+$ curl -kJLo /tmp/rhcos-410.8.20190520.0-installer.iso https://releases-art-jenkins.cloud.paas.upshift.redhat.com/storage/releases/ootpa/410.8.20190520.0/rhcos-410.8.20190520.0-installer.iso
 ```
 
 ### Modifying the ISO
@@ -201,7 +203,7 @@ KP_BLOCK_DEVICE=sda
 
 Running the script (make sure to do this as root) should produce similar output:
 
-```bash
+```shell
 $ sudo ./iso-generator.sh 
 mount: /tmp/rhcos-410.8.20190520.0-installer: WARNING: device write-protected, mounted read-only.
 sending incremental file list
@@ -249,8 +251,8 @@ At this point we have completed the staging process and can let Ansible take ove
 
 To kick off the installation, simply run the provision.yml playbook as follows:
 
-```bash
-ansible-playbook -i inventory.yml --ask-vault-pass provision.yml
+```shell
+$ ansible-playbook -i inventory.yml --ask-vault-pass provision.yml
 ```
 
 The order of operations for the `provision.yml` playbook is as follows:
@@ -277,7 +279,7 @@ Once the VMs boot CoreOS will be installed and nodes will automatically start co
 
 Run the following command to ensure the bootstrap process completes (be sure to adjust the `--dir` flag with your working directory):
 
-```bash
+```shell
 $ ./openshift-install --dir=/home/chris/upi/rhv-upi wait-for bootstrap-complete
 INFO Waiting up to 30m0s for the Kubernetes API at https://api.rhv-upi.ocp.pwc.umbrella.local:6443... 
 INFO API v1.13.4+f2cc675 up                       
@@ -293,6 +295,6 @@ Lastly, refer to the baremetal UPI documentation and complete [Logging into the 
 
 Playbooks are also provided to remove VMs from RHV and DNS entries from IdM. To do this, run the retirement playbook as follows:
 
-```console
+```shell
 $ ansible-playbook -i inventory.yml --ask-vault-pass retire.yml
 ```
