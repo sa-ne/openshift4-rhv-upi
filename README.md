@@ -288,3 +288,11 @@ INFO It is now safe to remove the bootstrap resources
 Once this openshift-install command completes successfully, login to the load balancer and comment out the references to the bootstrap server in `/etc/haproxy/haproxy.cfg`. There should be two references, one in the backend configuration `backend_22623` and one in the backend configuration `backend_6443`.
 
 Lastly, refer to the baremetal UPI documentation and complete [Logging into the cluster](https://docs.openshift.com/container-platform/4.1/installing/installing_bare_metal/installing-bare-metal.html#cli-logging-in-kubeadmin_installing-bare-metal) and all remaining steps.
+
+# Retiring
+
+Playbooks are also provided to remove VMs from RHV and DNS entries from IdM. To do this, run the retirement playbook as follows:
+
+```console
+$ ansible-playbook -i inventory.yml --ask-vault-pass retire.yml
+```
