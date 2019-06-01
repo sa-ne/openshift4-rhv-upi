@@ -31,6 +31,9 @@
     mode: 0644
     setype: httpd_sys_content_t
 
+- name: Restore SELinux Contexts in Document Root
+  shell: restorecon -R /var/www/html
+
 - name: Enable/Start httpd Service
   systemd:
     name: httpd
