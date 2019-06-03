@@ -257,7 +257,7 @@ $ ansible-playbook -i inventory.yml --ask-vault-pass provision.yml
 
 The order of operations for the `provision.yml` playbook is as follows:
 
-* Create DNS Entries in RHV
+* Create DNS Entries in IdM
 * Create VMs in RHV
 	- Create VMs
 	- Create Disks
