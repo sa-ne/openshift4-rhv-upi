@@ -8,15 +8,15 @@ _NOTE: Updated to include 4.1 GA bits_
 
 The playbooks/scripts in this repository should help you automate the vast majority of an OpenShift 4.1 UPI deployment on RHV. Be sure to read the requirements section below. My initial installation of OCP 4.1 on RHV was a little cumbersome, so I opted to automate the majority of the installation to allow for iterative deployments.
 
-The biggest challenge was the installation of the CoreOS nodes themselves and that is the focal point of the automation. The playbooks/scripts provided are essentially an automated walk through of the standard baremetal UPI installation instructions but tailored for RHV.
+The biggest challenge was the installation of the Red Hat Enterprise Linux CoreOS (RHCOS) nodes themselves and that is the focal point of the automation. The playbooks/scripts provided are essentially an automated walk through of the standard baremetal UPI installation instructions but tailored for RHV.
 
-To automate the deployment of CoreOS, the standard boot ISO is modified so the installation automatically starts with specific kernel parameters. The parameters for each node type (bootstrap, masters and workers) are the same with the exception of  `coreos.inst.ignition_url`. To simplify the process, the boot ISO is made to reference a PHP script that offers up the correct ignition config based on the requesting hosts DNS name. This method allows the same boot ISO to be used for each node type.
+To automate the deployment of RHCOS, the standard boot ISO is modified so the installation automatically starts with specific kernel parameters. The parameters for each node type (bootstrap, masters and workers) are the same with the exception of  `coreos.inst.ignition_url`. To simplify the process, the boot ISO is made to reference a PHP script that offers up the correct ignition config based on the requesting hosts DNS name. This method allows the same boot ISO to be used for each node type.
 
-Before provisioning the CoreOS nodes a lot of prep work needs to be completed. This includes creating the proper DNS entries for the environment, configuring a DHCP server, configuring a load balancer and configuring a web server to store ignition configs and other installation artifacts. Ansible playbooks are provided to automate much of this process.
+Before provisioning the RHCOS nodes a lot of prep work needs to be completed. This includes creating the proper DNS entries for the environment, configuring a DHCP server, configuring a load balancer and configuring a web server to store ignition configs and other installation artifacts. Ansible playbooks are provided to automate much of this process.
 
 ## Specific Automations
 
-* Deployment of Red Hat CoreOS on RHV
+* Deployment of RHCOS on RHV
 * Creation of all SRV, A and PTR records in IdM
 * Deployment of httpd Server for Installation Artifacts and Logic
 * Deployment of HAProxy and Applicable Configuration
@@ -169,7 +169,7 @@ Next copy bootstrap.ign, master.ign and worker.ign from your working directory t
 
 ## Generating Boot ISOs
 
-We will use a bootable ISO to install CoreOS on our virtual machines. We need to pass several parameters to the kernel (see below). This can be cumbersome, so to speed things along we will generate a single boot ISO that can be used for bootstrap, master and worker nodes. During the installation, a playbook will install the PHP script on your web server. This script will serve up the appropriate ignition config based on the requesting servers DNS name.
+We will use a bootable ISO to install RHCOS on our virtual machines. We need to pass several parameters to the kernel (see below). This can be cumbersome, so to speed things along we will generate a single boot ISO that can be used for bootstrap, master and worker nodes. During the installation, a playbook will install the PHP script on your web server. This script will serve up the appropriate ignition config based on the requesting servers DNS name.
 
 __Kernel Parameters__
 
@@ -180,7 +180,7 @@ Note these parameters are for reference only. Specify the appropriate values for
 * coreos.inst.image\_url=http://example.com/rhcos-410.8.20190418.1-metal-bios.raw.gz
 * coreos.inst.ignition\_url=http://example.com/ignition-downloader.php
 
-### Obtaining Red Hat CoreOS ISO
+### Obtaining RHCOS Install ISO
 
 Next we need the RHCOS ISO installer (stored [here](https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.1/latest/)). Download the ISO file as shown. Be sure to check the directory for the latest version.
 
@@ -192,7 +192,7 @@ $ curl -o /tmp/rhcos-4.1.0-x86_64-installer.iso https://mirror.openshift.com/pub
 
 A script is provided to recreate an ISO that will automatically boot with the appropriate kernel parameters. Locate the script and modify the variables at the top to suite your environment.
 
-Most parameters can be left alone. You WILL need to change at least the `KP_WEBSERVER` variable to point to the web server hosting your ignition configs and CoreOS image.
+Most parameters can be left alone. You WILL need to change at least the `KP_WEBSERVER` variable to point to the web server hosting your ignition configs and RHCOS image.
 
 ```shell-script
 VERSION=4.1.0-x86_64
@@ -281,7 +281,7 @@ Once the playbook completes (should several minutes) continue with the instructi
 
 ### Skipping Portions of Automation
 
-If you already have your own DNS, DHCP or Load Balancer you can skip those portions of the automation by passing the appropriate ``--skip-tags` argument to the `ansible-playbook` command.
+If you already have your own DNS, DHCP or Load Balancer you can skip those portions of the automation by passing the appropriate `--skip-tags` argument to the `ansible-playbook` command.
 
 Each step of the automation is placed in its own role. Each is tagged ipa, dhcpd and haproxy. If you have your own DHCP configured, you can skip that portion as follows:
 
