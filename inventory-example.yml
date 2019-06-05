@@ -2,7 +2,7 @@
 all:
   vars:
     provision_group: pg
-    iso_name: rhcos-410.8.20190520.0-installer-auto.iso
+    iso_name: rhcos-4.1.0-x86_64-installer-auto.iso
     base_domain: rhv-upi.ocp.pwc.umbrella.local
     dhcp_server_dns_servers: 172.16.10.11
     dhcp_server_gateway: 172.16.10.254

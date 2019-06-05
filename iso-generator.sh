@@ -2,7 +2,7 @@
 
 # Run this script as root
 
-VERSION=410.8.20190520.0
+VERSION=4.1.0-x86_64
 ISO_SOURCE=/tmp/rhcos-$VERSION-installer.iso
 ISO_OUTPUT=/tmp/rhcos-$VERSION-installer-auto.iso
 
