@@ -148,3 +148,11 @@ backend backend_80
     server {{ item }} {{ hostvars[item].ip }}:80 check
 {% endif %}
 {% endfor %}
+
+# Enable stats on :9000/haproxy_stats (no auth required)
+
+listen stats
+    bind 0.0.0.0:9000
+    mode http
+    stats enable
+    stats uri /haproxy_stats
