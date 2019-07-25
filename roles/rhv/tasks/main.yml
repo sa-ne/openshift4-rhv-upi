@@ -1,11 +1,15 @@
 ---
+- name: Authenticate to oVirt
+  ovirt_auth:
+    username: "{{ rhv_username }}"
+    password: "{{ rhv_password }}"
+    url: "https://{{ rhv_hostname }}/ovirt-engine/api"
+    insecure: True
+
+
 - name: Create VMs
   ovirt_vm:
-    auth:
-      username: "{{ rhv_username }}"
-      password: "{{ rhv_password }}"
-      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
-      insecure: True
+    auth: "{{ ovirt_auth }}"
     state: stopped
     delete_protected: False
     name: "{{ item }}.{{ base_domain }}"
@@ -31,11 +35,7 @@
 
 - name: Get VM Facts
   ovirt_vm_facts:
-    auth:
-      username: "{{ rhv_username }}"
-      password: "{{ rhv_password }}"
-      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
-      insecure: True
+    auth: "{{ ovirt_auth }}"
     fetch_nested: True
     nested_attributes: True
     pattern: name={{ item }}.{{ base_domain }} and cluster={{ rhv_cluster }}
@@ -67,11 +67,7 @@
 
 - name: Add Disks to VMs
   ovirt_disk:
-    auth:
-      username: "{{ rhv_username }}"
-      password: "{{ rhv_password }}"
-      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
-      insecure: True
+    auth: "{{ ovirt_auth }}"
     name: "{{ item.0.name }}.{{ base_domain }}-{{ item.1.name }}"
     bootable: "{{ item.1.bootable }}"
     vm_name: "{{ item.0.name }}.{{ base_domain }}"
@@ -104,11 +100,7 @@
 
 - name: Add NICs to VMs
   ovirt_nic:
-    auth:
-      username: "{{ rhv_username }}"
-      password: "{{ rhv_password }}"
-      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
-      insecure: True
+    auth: "{{ ovirt_auth }}"
     name: "{{ item.1.name }}"
     interface: "{{ item.1.interface }}"
     network: "{{ item.1.network }}"
@@ -123,11 +115,7 @@
 
 - name: Get VM NIC Facts
   ovirt_nic_facts:
-    auth:
-      username: "{{ rhv_username }}"
-      password: "{{ rhv_password }}"
-      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
-      insecure: True
+    auth: "{{ ovirt_auth }}"
     name: eth0
     vm: "{{ item }}.{{ base_domain }}"
   register: ovirt_nic_facts_results
@@ -153,6 +141,11 @@
 - name: Debug host_mac_list
   debug:
     var: host_mac_list
+
+- name: Revoke the SSO token
+  ovirt_auth:
+    state: absent
+    ovirt_auth: "{{ ovirt_auth }}"
 
 #- name: Build VM/eth0 Results for DHCP
 #  set_fact:
