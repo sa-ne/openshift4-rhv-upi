@@ -1,10 +1,13 @@
+- name: Authenticate to oVirt
+  ovirt_auth:
+    username: "{{ rhv_username }}"
+    password: "{{ rhv_password }}"
+    url: "https://{{ rhv_hostname }}/ovirt-engine/api"
+    insecure: True
+
 - name: Startup (install) Bootstrap Node
   ovirt_vm:
-    auth:
-      username: "{{ rhv_username }}"
-      password: "{{ rhv_password }}"
-      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
-      insecure: True
+    auth: "{{ ovirt_auth }}"
     name: "bootstrap.{{ base_domain }}"
     state: running
 
@@ -17,11 +20,7 @@
 
 - name: Startup (install) Master Nodes
   ovirt_vm:
-    auth:
-      username: "{{ rhv_username }}"
-      password: "{{ rhv_password }}"
-      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
-      insecure: True
+    auth: "{{ ovirt_auth }}"
     name: "{{ item }}.{{ base_domain }}"
     state: running
   with_items:
@@ -40,11 +39,7 @@
 
 - name: Startup (install) Worker Nodes
   ovirt_vm:
-    auth:
-      username: "{{ rhv_username }}"
-      password: "{{ rhv_password }}"
-      url: "https://{{ rhv_hostname }}/ovirt-engine/api"
-      insecure: True
+    auth: "{{ ovirt_auth }}"
     name: "{{ item }}.{{ base_domain }}"
     state: running
   with_items:
@@ -60,3 +55,8 @@
   with_items:
     - "{{ groups[provision_group] }}"
   when: item is search("worker")
+
+- name: Revoke the SSO token
+  ovirt_auth:
+    state: absent
+    ovirt_auth: "{{ ovirt_auth }}"
