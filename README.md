@@ -80,7 +80,7 @@ The following global variables will need to be modified (the default values are 
 |dhcp\_server\_subnet|IP Subnet used to configure dhcpd.conf|
 |load\_balancer\_ip|This IP address of your load balancer (the server that HAProxy will be installed on)|
 
-For the individual node configuration, be sure to update the hosts in the `pg` hostgroup. Several parameters will need to be changed for _each_ host including `ip`, `storage_domain` and `network`. Match up your RHV environment with the inventory file.
+For the individual node configuration, be sure to update the hosts in the `pg` hostgroup. Several parameters will need to be changed for _each_ host including `ip`, `storage_domain` and `network`. You can also specify `mac_address` for each of the VMs in its `network` section (if you don't, VMs will obtain their MAC address from cluster's MAC pool automatically). Match up your RHV environment with the inventory file.
 
 Under the `webserver` and `loadbalancer` group include the FQDN of each host. Also make sure you configure the `httpd_port` variable for the web server host. In this example, the web server that will serve up installation artifacts and load balancer (HAProxy) are the same host.
 
