@@ -105,6 +105,7 @@
     interface: "{{ item.1.interface }}"
     network: "{{ item.1.network }}"
     profile: "{{ item.1.network }}"
+    mac_address: "{{ item.1.mac_address | default(omit) }}"
     vm: "{{ item.0.name }}.{{ base_domain }}"
   tags:
     - create_nics

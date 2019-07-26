@@ -36,6 +36,7 @@ all:
           - name: eth0
             network: lab
             interface: virtio
+            # mac_address: You can provide specific MAC address here
         master0:
           etcd_name: etcd-0
           ip: 172.16.10.151
