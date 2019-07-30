@@ -34,6 +34,13 @@
 - name: Restore SELinux Contexts in Document Root
   shell: restorecon -R /var/www/html
 
+- name: Enable webserver ports in firewall
+  firewalld:
+    port: "{{ httpd_port }}/tcp"
+    state: enabled
+    permanent: yes
+    immediate: yes
+
 - name: Enable/Start httpd Service
   systemd:
     name: httpd
