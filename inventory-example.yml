@@ -9,6 +9,7 @@ all:
     dhcp_server_subnet_mask: 255.255.255.0
     dhcp_server_subnet: 172.16.10.0
     load_balancer_ip: 172.16.10.114
+    installation_directory: /home/chris/upi/rhv-upi
   children:
     webserver:
       hosts:
