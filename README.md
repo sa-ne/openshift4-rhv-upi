@@ -148,7 +148,7 @@ You will need to modify baseDomain, pullSecret and sshKey (be sure to use your _
 Your pull secret can be obtained from the [OpenShift start page](https://cloud.redhat.com/openshift/install/metal/user-provisioned).
 
 ```console
-$ ./openshift-installer create ignition-configs --dir=/home/chris/upi/rhv-upi
+$ ./openshift-install create ignition-configs --dir=/home/chris/upi/rhv-upi
 ```
 
 ## Staging Content
