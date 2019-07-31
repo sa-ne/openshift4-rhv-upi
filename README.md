@@ -79,6 +79,7 @@ The following global variables will need to be modified (the default values are 
 |dhcp\_server\_subnet\_mask|Subnet mask assigned by DHCP server|
 |dhcp\_server\_subnet|IP Subnet used to configure dhcpd.conf|
 |load\_balancer\_ip|This IP address of your load balancer (the server that HAProxy will be installed on)|
+|installation_directory|The directory that you will be using with `openshift-install` command for generating ignition files|
 
 For the individual node configuration, be sure to update the hosts in the `pg` hostgroup. Several parameters will need to be changed for _each_ host including `ip`, `storage_domain` and `network`. You can also specify `mac_address` for each of the VMs in its `network` section (if you don't, VMs will obtain their MAC address from cluster's MAC pool automatically). Match up your RHV environment with the inventory file.
 
@@ -165,7 +166,7 @@ $ sudo mkdir -p /var/www/html
 $ sudo curl -o /var/www/html/rhcos-4.1.0-x86_64-metal-bios.raw.gz https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.1/latest/rhcos-4.1.0-x86_64-metal-bios.raw.gz
 ```
 
-Next copy bootstrap.ign, master.ign and worker.ign from your working directory to `/var/www/html` on your web server.
+Ignition files generated in the previous step will be copied to web server automatically as part of `httpd` role. If you intend to skip that role, copy bootstrap.ign, master.ign and worker.ign from your working directory to `/var/www/html` on your web server manually now.
 
 ## Generating Boot ISOs
 
