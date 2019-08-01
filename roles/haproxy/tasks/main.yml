@@ -21,6 +21,18 @@
     state: yes
     persistent: yes
 
+- name: Enable proxied ports in firewall
+  firewalld:
+    port: "{{ item }}/tcp"
+    state: enabled
+    permanent: yes
+    immediate: yes
+  loop:
+    - 80
+    - 443
+    - 6443
+    - 22623
+
 - name: Enable/Start haproxy Service
   systemd:
     name: haproxy
