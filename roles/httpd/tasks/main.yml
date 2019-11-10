@@ -5,8 +5,10 @@
       - php
       - policycoreutils-python
     state: latest
+  tags:
+    - install-packages
 
-- name: Allow httpd to listen on TCP port 8888
+- name: Allow httpd to listen on TCP port {{ httpd_port }}
   seport:
     ports: "{{ httpd_port }}"
     proto: tcp
@@ -53,6 +55,8 @@
     state: enabled
     permanent: yes
     immediate: yes
+  tags:
+    - firewalld
 
 - name: Enable/Start httpd Service
   systemd:

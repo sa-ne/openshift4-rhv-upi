@@ -2,14 +2,14 @@
 all:
   vars:
     provision_group: pg
-    iso_name: rhcos-4.1.0-x86_64-installer-auto.iso
+    iso_name: rhcos-4.2.0-x86_64-installer-auto.iso
     base_domain: rhv-upi.ocp.pwc.umbrella.local
     dhcp_server_dns_servers: 172.16.10.11
     dhcp_server_gateway: 172.16.10.254
     dhcp_server_subnet_mask: 255.255.255.0
     dhcp_server_subnet: 172.16.10.0
     load_balancer_ip: 172.16.10.114
-    installation_directory: /home/chris/upi/rhv-upi
+    installation_directory: /home/chris/git/openshift4-rhv-upi/local/install/rhv-upi
   children:
     webserver:
       hosts:

@@ -5,6 +5,8 @@
       - libselinux-python
       - libsemanage-python
     state: latest
+  tags:
+    - install-packages
 
 - name: Copy haproxy.cfg Template
   template:
@@ -32,6 +34,8 @@
     - 443
     - 6443
     - 22623
+  tags:
+    - firewalld
 
 - name: Enable/Start haproxy Service
   systemd:

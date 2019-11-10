@@ -1,12 +1,12 @@
-# Provisioning OpenShift 4.1 on RHV Using Baremetal UPI
+# Provisioning OpenShift 4.2 on RHV Using Baremetal UPI
 
-This repository contains a set of playbooks to help facilitate the deployment of OpenShift 4.1 on RHV.
+This repository contains a set of playbooks to help facilitate the deployment of OpenShift 4.2 on RHV.
 
-_NOTE: Updated to include 4.1 GA bits_
+_NOTE: Updated to include 4.2 bits on 11-10-2019_
 
 ## Background
 
-The playbooks/scripts in this repository should help you automate the vast majority of an OpenShift 4.1 UPI deployment on RHV. Be sure to read the requirements section below. My initial installation of OCP 4.1 on RHV was a little cumbersome, so I opted to automate the majority of the installation to allow for iterative deployments.
+The playbooks/scripts in this repository should help you automate the vast majority of an OpenShift 4.2 UPI deployment on RHV. Be sure to read the requirements section below. My initial installation of OCP 4.2 on RHV was a little cumbersome, so I opted to automate the majority of the installation to allow for iterative deployments.
 
 The biggest challenge was the installation of the Red Hat Enterprise Linux CoreOS (RHCOS) nodes themselves and that is the focal point of the automation. The playbooks/scripts provided are essentially an automated walk through of the standard baremetal UPI installation instructions but tailored for RHV.
 
@@ -50,7 +50,7 @@ All hostnames must follow the following format:
 
 # Installing
 
-Read through the [Installing on baremetal](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.1/html-single/installing/index#installing-bare-metal) installation documentation before proceeding.
+Read through the [Installing on baremetal](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html-single/installing/index#installing-bare-metal) installation documentation before proceeding.
 
 ## Clone this Repository
 
@@ -111,7 +111,7 @@ ipa_password: "changeme"
 The OpenShift Installer releases are stored [here](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/). Find the installer, right click on the "Download Now" button and select copy link. Then pull the installer using curl (be sure to quote the URL) as shown (linux client used as example):
 
 ```console
-$ curl -o openshift-install-linux-4.1.0.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-install-linux-4.1.0.tar.gz
+$ curl -o openshift-install-linux-4.2.0.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-install-linux-4.2.0.tar.gz
 ```
 
 Extract the archive and continue.
@@ -154,7 +154,7 @@ $ ./openshift-install create ignition-configs --dir=/home/chris/upi/rhv-upi
 
 ## Staging Content
 
-Next we need the RHCOS image. These images are stored [here](https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.1/latest/). On our web server, download the RHCOS image (BIOS, not UEFI) to the document root (assuming `/var/www/html`).
+Next we need the RHCOS image. These images are stored [here](https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.2/latest/). On our web server, download the RHCOS image (BIOS, not UEFI) to the document root (assuming `/var/www/html`).
 
 _NOTE: You may be wondering about SELinux contexts since httpd is not installed. Fear not, our playbooks will handle that during the installation phase._
 
@@ -163,7 +163,7 @@ $ sudo mkdir -p /var/www/html
 ```
 
 ```console
-$ sudo curl -o /var/www/html/rhcos-4.1.0-x86_64-metal-bios.raw.gz https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.1/latest/rhcos-4.1.0-x86_64-metal-bios.raw.gz
+$ sudo curl -o /var/www/html/rhcos-4.2.0-x86_64-metal-bios.raw.gz https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.2/latest/rhcos-4.2.0-x86_64-metal-bios.raw.gz
 ```
 
 Ignition files generated in the previous step will be copied to web server automatically as part of `httpd` role. If you intend to skip that role, copy bootstrap.ign, master.ign and worker.ign from your working directory to `/var/www/html` on your web server manually now.
@@ -183,10 +183,10 @@ Note these parameters are for reference only. Specify the appropriate values for
 
 ### Obtaining RHCOS Install ISO
 
-Next we need the RHCOS ISO installer (stored [here](https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.1/latest/)). Download the ISO file as shown. Be sure to check the directory for the latest version.
+Next we need the RHCOS ISO installer (stored [here](https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.2/latest/)). Download the ISO file as shown. Be sure to check the directory for the latest version.
 
 ```console
-$ curl -o /tmp/rhcos-4.1.0-x86_64-installer.iso https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.1/latest/rhcos-4.1.0-x86_64-installer.iso
+$ curl -o /tmp/rhcos-4.2.0-x86_64-installer.iso https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.2/latest/rhcos-4.2.0-x86_64-installer.iso
 ```
 
 ### Modifying the ISO
@@ -196,7 +196,7 @@ A script is provided to recreate an ISO that will automatically boot with the ap
 Most parameters can be left alone. You WILL need to change at least the `KP_WEBSERVER` variable to point to the web server hosting your ignition configs and RHCOS image.
 
 ```shell-script
-VERSION=4.1.0-x86_64
+VERSION=4.2.0-x86_64
 ISO_SOURCE=/tmp/rhcos-$VERSION-installer.iso
 ISO_OUTPUT=/tmp/rhcos-$VERSION-installer-auto.iso
 
@@ -212,7 +212,7 @@ Running the script (make sure to do this as root) should produce similar output:
 
 ```console
 (rhv) 0 chris@umbrella.local@toaster:~ $ sudo ./iso-generator.sh 
-mount: /tmp/rhcos-4.1.0-x86_64-installer: WARNING: device write-protected, mounted read-only.
+mount: /tmp/rhcos-4.2.0-x86_64-installer: WARNING: device write-protected, mounted read-only.
 sending incremental file list
 README.md
 EFI/
@@ -250,11 +250,11 @@ Max brk space used 1c000
 37255 extents written (72 MB)
 ```
 
-Copy the ISO to your ISO domain in RHV. After that you can cleanup the /tmp directory by doing `rm -rf /tmp/rhcos*`. Make sure to update the `iso_name` variable in your Ansible inventory file with the correct name (`rhcos-4.1.0-x86_64-installer-auto.iso` in this example).
+Copy the ISO to your ISO domain in RHV. After that you can cleanup the /tmp directory by doing `rm -rf /tmp/rhcos*`. Make sure to update the `iso_name` variable in your Ansible inventory file with the correct name (`rhcos-4.2.0-x86_64-installer-auto.iso` in this example).
 
 At this point we have completed the staging process and can let Ansible take over.
 
-## Deploying OpenShift 4.1 on RHV with Ansible
+## Deploying OpenShift 4.2 on RHV with Ansible
 
 To kick off the installation, simply run the provision.yml playbook as follows:
 
@@ -298,7 +298,7 @@ $ ansible-playbook -i inventory.yml --ask-vault-pass --skip-tags dhcpd,ipa,hapro
 
 ## Finishing the Deployment
 
-Once the VMs boot RHCOS will be installed and nodes will automatically start configuring themselves. From this point we are essentially following the Baremetal UPI instructions starting with [Creating the Cluster](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.1/html-single/installing/index#installation-installing-bare-metal_installing-bare-metal).
+Once the VMs boot RHCOS will be installed and nodes will automatically start configuring themselves. From this point we are essentially following the Baremetal UPI instructions starting with [Creating the Cluster](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html-single/installing/index#installation-installing-bare-metal_installing-bare-metal).
 
 Run the following command to ensure the bootstrap process completes (be sure to adjust the `--dir` flag with your working directory):
 
@@ -316,7 +316,7 @@ Once this openshift-install command completes successfully, login to the load ba
 ansible-playbook -i inventory.yml bootstrap_cleanup.yml
 ```
 
-Lastly, refer to the baremetal UPI documentation and complete [Logging into the cluster](https://docs.openshift.com/container-platform/4.1/installing/installing_bare_metal/installing-bare-metal.html#cli-logging-in-kubeadmin_installing-bare-metal) and all remaining steps.
+Lastly, refer to the baremetal UPI documentation and complete [Logging into the cluster](https://docs.openshift.com/container-platform/4.2/installing/installing_bare_metal/installing-bare-metal.html#cli-logging-in-kubeadmin_installing-bare-metal) and all remaining steps.
 
 # Retiring
 
