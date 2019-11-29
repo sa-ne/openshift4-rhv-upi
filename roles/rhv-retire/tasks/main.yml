@@ -8,7 +8,7 @@
       insecure: true
     state: absent
     name: "{{ item }}.{{ base_domain }}"
-    cluster: "{{ rhv_cluster }}"
+    cluster: "{{ hostvars[item].rhv_cluster }}"
   register: ovirt_vm_results
   with_items:
     - "{{ groups[provision_group] }}"

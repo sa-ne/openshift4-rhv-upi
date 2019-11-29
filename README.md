@@ -100,7 +100,6 @@ The vault requires the following variables. Adjust the values to suit your envir
 rhv_hostname: "rhevm.pwc.umbrella.local"
 rhv_username: "admin@internal"
 rhv_password: "changeme"
-rhv_cluster: "r710s"
 ipa_hostname: "idm1.umbrella.local"
 ipa_username: "admin"
 ipa_password: "changeme"

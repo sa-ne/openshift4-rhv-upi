@@ -13,7 +13,7 @@
     state: stopped
     delete_protected: False
     name: "{{ item }}.{{ base_domain }}"
-    cluster: "{{ rhv_cluster }}"
+    cluster: "{{ hostvars[item].rhv_cluster }}"
     type: server
     memory: "{{ hostvars[item].memory }}"
     cpu_sockets: "{{ hostvars[item].sockets }}"
@@ -38,7 +38,7 @@
     auth: "{{ ovirt_auth }}"
     fetch_nested: True
     nested_attributes: True
-    pattern: name={{ item }}.{{ base_domain }} and cluster={{ rhv_cluster }}
+    pattern: name={{ item }}.{{ base_domain }} and cluster={{ hostvars[item].rhv_cluster }}
   with_items:
     - "{{ groups[provision_group] }}"
   register: ovirt_vm_facts_results

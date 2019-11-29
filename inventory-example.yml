@@ -21,6 +21,7 @@ all:
     pg:
       hosts:
         bootstrap:
+          rhv_cluster: "r710s"
           ip: 172.16.10.150
           memory: 24GiB
           sockets: 1
@@ -39,6 +40,7 @@ all:
             interface: virtio
             # mac_address: You can provide specific MAC address here
         master0:
+          rhv_cluster: "r710s"
           etcd_name: etcd-0
           ip: 172.16.10.151
           memory: 24GiB
@@ -57,6 +59,7 @@ all:
             network: lab
             interface: virtio
         master1:
+          rhv_cluster: "r710s"
           etcd_name: etcd-1
           ip: 172.16.10.152
           memory: 24GiB
@@ -75,6 +78,7 @@ all:
             network: lab
             interface: virtio
         master2:
+          rhv_cluster: "r710s"
           etcd_name: etcd-2
           ip: 172.16.10.153
           memory: 24GiB
@@ -93,6 +97,7 @@ all:
             network: lab
             interface: virtio
         worker0:
+          rhv_cluster: "r710s"
           ip: 172.16.10.154
           memory: 24GiB
           sockets: 1
@@ -110,6 +115,7 @@ all:
             network: lab
             interface: virtio
         worker1:
+          rhv_cluster: "r710s"
           ip: 172.16.10.155
           memory: 24GiB
           sockets: 1
@@ -127,6 +133,7 @@ all:
             network: lab
             interface: virtio
         worker2:
+          rhv_cluster: "r710s"
           ip: 172.16.10.156
           memory: 24GiB
           sockets: 1
@@ -144,6 +151,7 @@ all:
             network: lab
             interface: virtio
         worker3:
+          rhv_cluster: "r710s"
           ip: 172.16.10.157
           memory: 24GiB
           sockets: 1
