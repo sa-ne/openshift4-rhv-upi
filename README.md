@@ -317,6 +317,27 @@ ansible-playbook -i inventory.yml bootstrap_cleanup.yml
 
 Lastly, refer to the baremetal UPI documentation and complete [Logging into the cluster](https://docs.openshift.com/container-platform/4.2/installing/installing_bare_metal/installing-bare-metal.html#cli-logging-in-kubeadmin_installing-bare-metal) and all remaining steps.
 
+# Installing QEMU Guest Agent
+
+RHCOS includes the `open-vm-tools` package by default but does not include `qemu-guest-agent`. To work around this, we can install the `qemu-ga` binary and requisite configuration using a Machine Config. The following files were extracted from the `qemu-guest-agent` rpm, base64 encoded and added to the ignition portion of the Machine Config.
+
+* /etc/qemu-ga/fsfreeze-hook
+* /etc/sysconfig/qemu-ga
+* /etc/udev/rules.d/99-qemu-guest-agent.rules
+* /usr/bin/qemu-ga
+
+Since the `/usr` filesystem on RHCOS is mounted read-only, the `qemu-ga` binary was placed in `/opt/qemu-guest-agent/bin/qemu-ga`. Left alone the `qemu-guest-agent` service will fail to start because the `qemu-ga` binary does not have the appropriate SELinux contexts. To work around this, an additional service named `qemu-guest-agent-selinux` is added to force the appropriate contexts before the `qemu-guest-agent` services starts. Both services are added via the `systemd` portion of the ignition config.
+
+To add the `qemu-guest-agent` service to your worker nodes, simply run the following command:
+
+```oc create -f 50-worker-qemu-guest-agent.yaml```
+
+When applied, the Machine Config Operator will perform a rolling reboot of all worker nodes in your cluster.
+
+Similarly, the `qemu-guest-agent` service can be applied to your master nodes using the following command:
+
+```oc create -f 50-master-qemu-guest-agent.yaml```
+
 # Retiring
 
 Playbooks are also provided to remove VMs from RHV and DNS entries from IdM. To do this, run the retirement playbook as follows:
