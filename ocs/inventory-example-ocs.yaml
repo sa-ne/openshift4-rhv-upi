@@ -1,0 +1,241 @@
+---
+all:
+  vars:
+    provision_group: pg
+    iso_name: rhcos-4.2.0-x86_64-installer-auto.iso
+    base_domain: rhv-upi.ocp.pwc.umbrella.local
+    dhcp_server_dns_servers: 172.16.10.11
+    dhcp_server_gateway: 172.16.10.254
+    dhcp_server_subnet_mask: 255.255.255.0
+    dhcp_server_subnet: 172.16.10.0
+    load_balancer_ip: 172.16.10.115
+    installation_directory: /home/chris/upi/rhv-upi
+  children:
+    webserver:
+      hosts:
+        lb.rhv-upi.ocp.pwc.umbrella.local:
+          httpd_port: 8080
+    loadbalancer:
+      hosts:
+        lb.rhv-upi.ocp.pwc.umbrella.local:
+    pg:
+      hosts:
+        bootstrap:
+          rhv_cluster: "r710s"
+          ip: 172.16.10.150
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_name }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 100GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        master0:
+          rhv_cluster: "r710s"
+          etcd_name: etcd-0
+          ip: 172.16.10.151
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_name }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 100GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        master1:
+          rhv_cluster: "r710s"
+          etcd_name: etcd-1
+          ip: 172.16.10.152
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_name }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 100GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        master2:
+          rhv_cluster: "r710s"
+          etcd_name: etcd-2
+          ip: 172.16.10.153
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_name }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 100GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nfs-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        worker0:
+          rhv_cluster: "r710-hv1"
+          ip: 172.16.10.154
+          memory: 48GiB
+          sockets: 2
+          cores: 6
+          iso: "{{ iso_name }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 100GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: rhv-r710-hv1-cluster-vms
+          - name: mon
+            bootable: no
+            size: 10GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nvme-vms
+          - name: osd
+            bootable: no
+            size: 300GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nvme-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        worker1:
+          rhv_cluster: "r710-hv1"
+          ip: 172.16.10.155
+          memory: 48GiB
+          sockets: 2
+          cores: 6
+          iso: "{{ iso_name }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 100GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: rhv-r710-hv1-cluster-vms
+          - name: mon
+            bootable: no
+            size: 10GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nvme-vms
+          - name: osd
+            bootable: no
+            size: 300GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nvme-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        worker2:
+          rhv_cluster: "r710-hv1"
+          ip: 172.16.10.156
+          memory: 48GiB
+          sockets: 2
+          cores: 6
+          iso: "{{ iso_name }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 100GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: rhv-r710-hv1-cluster-vms
+          - name: mon
+            bootable: no
+            size: 10GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nvme-vms
+          - name: osd
+            bootable: no
+            size: 300GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: nvme-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        worker3:
+          rhv_cluster: "r710-hv1"
+          ip: 172.16.10.157
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_name }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 100GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: rhv-r710-hv1-cluster-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        worker4:
+          rhv_cluster: "r710-hv1"
+          ip: 172.16.10.158
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_name }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 100GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: rhv-r710-hv1-cluster-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio
+        worker5:
+          rhv_cluster: "r710-hv1"
+          ip: 172.16.10.159
+          memory: 24GiB
+          sockets: 1
+          cores: 4
+          iso: "{{ iso_name }}"
+          disks:
+          - name: os
+            bootable: yes
+            size: 100GiB
+            format: cow
+            interface: virtio_scsi
+            storage_domain: rhv-r710-hv1-cluster-vms
+          nics:
+          - name: eth0
+            network: lab
+            interface: virtio

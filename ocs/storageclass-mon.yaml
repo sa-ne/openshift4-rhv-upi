@@ -1,0 +1,21 @@
+apiVersion: "local.storage.openshift.io/v1"
+kind: "LocalVolume"
+metadata:
+  name: "localstorage-ocs-mon"
+  namespace: "openshift-storage"
+spec:
+  nodeSelector:
+    nodeSelectorTerms:
+    - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - worker0.rhv-upi.ocp.pwc.umbrella.local
+          - worker1.rhv-upi.ocp.pwc.umbrella.local
+          - worker2.rhv-upi.ocp.pwc.umbrella.local
+  storageClassDevices:
+    - storageClassName: "localstorage-ocs-mon-sc"
+      volumeMode: Filesystem
+      fsType: xfs
+      devicePaths:
+        - /dev/sdc

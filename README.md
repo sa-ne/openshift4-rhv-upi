@@ -330,13 +330,156 @@ Since the `/usr` filesystem on RHCOS is mounted read-only, the `qemu-ga` binary 
 
 To add the `qemu-guest-agent` service to your worker nodes, simply run the following command:
 
-```oc create -f 50-worker-qemu-guest-agent.yaml```
+```console
+oc create -f 50-worker-qemu-guest-agent.yaml
+```
 
 When applied, the Machine Config Operator will perform a rolling reboot of all worker nodes in your cluster.
 
 Similarly, the `qemu-guest-agent` service can be applied to your master nodes using the following command:
 
-```oc create -f 50-master-qemu-guest-agent.yaml```
+```console
+oc create -f 50-master-qemu-guest-agent.yaml
+```
+
+# Installing OpenShift Container Storage (OCS)
+
+OpenShift Container Storage (OCS) has not been released for OCP 4 yet. This guide will show you how to deploy the current release candidate using a bare metal methodology and local storage.
+
+## Requirements
+
+For typical deployments, OCS will require three dedicated worker nodes with the following VM specs:
+
+* 48GB RAM
+* 12 vCPU
+* 1 OSD Disk (300Gi)
+* 1 MON Disk (10Gi)
+
+The OSD disks can really be any size but 300Gi is used in this example. Also, an example inventory file (`ocs/inventory-example-ocs.yaml`) that shows how to add multiple disks to a worker node is included in the root of this repository.
+
+## Labeling Nodes
+
+Before we begin an installation, we need to label our OCS nodes with the label `cluster.ocs.openshift.io/openshift-storage`. Label each node with the following command:
+
+```console
+$ oc label node workerX.rhv-upi.ocp.pwc.umbrella.local cluster.ocs.openshift.io/openshift-storage=''
+```
+
+## Deploying OCS and Local Storage Operator
+
+OCS will use the default storage class (typically `gp2` in AWS and VMware deployments) to create the PVCs used for the OSD and MON disks. Since our RHV deployment does not have an existing storage class we will use the Local Storage Operator to create two storage class with PVs backed by block devices on our OCS nodes.
+
+### Deploying OCS Operator
+
+To deploy the OCS operator, run the following command:
+
+```console
+$ oc create -f ocs/ocs-operator.yaml
+```
+
+### Deploying the Local Storage Operator
+
+To deploy the Local Storage operator, run the following command (note that this will install the Local Storage Operator and supporting operators in the same namespace as the OCS operator):
+
+```console
+$ oc create -f ocs/localstorage-operator.yaml
+```
+
+### Verifying
+
+To verify the operators were successfully installed, run the following:
+
+```console
+$ oc get csv -n openshift-storage
+NAME                                         DISPLAY                                VERSION               REPLACES              PHASE
+awss3operator.1.0.1                          AWS S3 Operator                        1.0.1                 awss3operator.1.0.0   Succeeded
+local-storage-operator.4.2.10-201912022352   Local Storage                          4.2.10-201912022352                         Succeeded
+ocs-operator.v0.0.276                        Openshift Container Storage Operator   0.0.276                                     Succeeded
+```
+
+You should see phase `Succeeded`.
+
+## Creating Storage Classes for OSD and MON Disks
+
+Next we will create two storage classes using the Local Storage Operator. One for the OSD disks and another for the MON disks. Two storage classes are used as the OSDs require `volumeMode: block` and the MONs require `volumeMode: filesystem`.
+
+Login to your worker nodes over SSH and verify the locations of your block devices (this can be done w/ the `lsblk` command). In this example, the OSD disks on each node are located at `/dev/sdb` and the MON disks are located at `/dev/sdc`.
+
+Modify the `ocs/storageclass-mon.yaml` and `ocs/storageclass-osd.yaml` files to suit your environment. Pay special attention to the `nodeSelectors` and `devicePaths` field.
+
+Once you have the right values, create the storage classes as follows:
+
+```console
+$ oc create -f ocs/storageclass-mon.yaml
+```
+
+```console
+$ oc create -f ocs/storageclass-osd.yaml
+```
+
+To verify, check for the appropriate storage classes and persistent volumes as follows (output may vary slightly):
+
+```console
+$ oc get sc
+NAME                          PROVISIONER                             AGE
+localstorage-ocs-mon-sc       kubernetes.io/no-provisioner            49m
+localstorage-ocs-osd-sc       kubernetes.io/no-provisioner            49m
+```
+
+```console
+$ oc get pv
+NAME                CAPACITY   ACCESS MODES   RECLAIM POLICY   ...   STORAGECLASS              REASON   AGE
+local-pv-1e5a8670   300Gi      RWO            Delete           ...   localstorage-ocs-osd-sc            6h53m
+local-pv-60e5cc95   300Gi      RWO            Delete           ...   localstorage-ocs-osd-sc            6h53m
+local-pv-bc51d61e   300Gi      RWO            Delete           ...   localstorage-ocs-osd-sc            6h53m
+local-pv-6b8a2749   10Gi       RWO            Delete           ...   localstorage-ocs-mon-sc            6h53m
+local-pv-709ff523   10Gi       RWO            Delete           ...   localstorage-ocs-mon-sc            6h53m
+local-pv-a8913854   10Gi       RWO            Delete           ...   localstorage-ocs-mon-sc            6h53m
+```
+
+## Provisioning OCS Cluster
+
+Modify the file `ocs/storagecluster.yaml` and adjust the storage requests accordingly. These requests must match the underlying PV sizes in the corresponding storage class.
+
+To create the cluster, run the following command:
+
+```console
+$ oc create -f ocs/storagecluster.yaml
+```
+
+The installation process should take approximately 5 minutes. Run `oc get pods -n openshift-storage -w` to observe the process.
+
+To verify the installation is complete, run the following:
+
+```console
+$ oc get storagecluster storagecluster -ojson -n openshift-storage | jq .status
+{
+  "cephBlockPoolsCreated": true,
+  "cephFilesystemsCreated": true,
+  "cephObjectStoreUsersCreated": true,
+  "cephObjectStoresCreated": true,
+  ...
+}
+```
+
+All fields should be marked true.
+
+## Adding Storage for OpenShift Registry
+
+OCS provides RBD and CephFS backed storage classes for use within the cluster. We can leverage the CephFS storage class to create a PVC for the OpenShift registry.
+
+Modify the file `ocs/registry-cephfs-pvc.yaml` file and adjust the size of the claim. Then run the following to create the PVC:
+
+```console
+$ oc create -f ocs/registry-cephfs-pvc.yaml
+```
+
+To reconfigure the registry to use our new PVC, run the following:
+
+```console
+$ oc patch configs.imageregistry.operator.openshift.io/cluster --type merge -p '{"spec":{"storage":{"pvc":{"claim":"registry"}}}}'
+```
+
 
 # Retiring
 
