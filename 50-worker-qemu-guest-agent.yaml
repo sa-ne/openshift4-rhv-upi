@@ -63,7 +63,6 @@ spec:
           UMask=0077
           EnvironmentFile=/etc/sysconfig/qemu-ga
           ExecStart=/opt/qemu-guest-agent/bin/qemu-ga \
-            -vvv \
             --method=virtio-serial \
             --path=/dev/virtio-ports/org.qemu.guest_agent.0 \
             --blacklist=${BLACKLIST_RPC} \
