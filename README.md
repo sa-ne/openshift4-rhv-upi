@@ -2,8 +2,6 @@
 
 This repository contains a set of playbooks to help facilitate the deployment of OpenShift 4.2 on RHV.
 
-_NOTE: Updated to include 4.2 bits on 11-10-2019_
-
 ## Background
 
 The playbooks/scripts in this repository should help you automate the vast majority of an OpenShift 4.2 UPI deployment on RHV. Be sure to read the requirements section below. My initial installation of OCP 4.2 on RHV was a little cumbersome, so I opted to automate the majority of the installation to allow for iterative deployments.
@@ -344,7 +342,7 @@ oc create -f 50-master-qemu-guest-agent.yaml
 
 # Installing OpenShift Container Storage (OCS)
 
-OpenShift Container Storage (OCS) has not been released for OCP 4 yet. This guide will show you how to deploy the current release candidate using a bare metal methodology and local storage.
+This guide will show you how to deploy OpenShift Container Storage (OCS) using a bare metal methodology and local storage.
 
 ## Requirements
 
@@ -391,13 +389,13 @@ To verify the operators were successfully installed, run the following:
 
 ```console
 $ oc get csv -n openshift-storage
-NAME                                         DISPLAY                                VERSION               REPLACES              PHASE
-awss3operator.1.0.1                          AWS S3 Operator                        1.0.1                 awss3operator.1.0.0   Succeeded
-local-storage-operator.4.2.10-201912022352   Local Storage                          4.2.10-201912022352                         Succeeded
-ocs-operator.v0.0.276                        Openshift Container Storage Operator   0.0.276                                     Succeeded
+NAME                                         DISPLAY                          VERSION               REPLACES                     PHASE
+awss3operator.1.0.1                          AWS S3 Operator                  1.0.1                 awss3operator.1.0.0          Succeeded
+local-storage-operator.4.2.14-202001061701   Local Storage                    4.2.14-202001061701                                Succeeded
+ocs-operator.v4.2.0                          OpenShift Container Storage      4.2.0                                              Succeeded
 ```
 
-You should see phase `Succeeded`.
+You should see phase `Succeeded` for all operators.
 
 ## Creating Storage Classes for OSD and MON Disks
 
