@@ -2,7 +2,7 @@
 
 # Run this script as root
 
-VERSION=4.2.0-x86_64
+VERSION=4.3.0-x86_64
 ISO_SOURCE=/tmp/rhcos-$VERSION-installer.iso
 ISO_OUTPUT=/tmp/rhcos-$VERSION-installer-auto.iso
 
@@ -10,7 +10,7 @@ DIRECTORY_MOUNT=/tmp/rhcos-$VERSION-installer
 DIRECTORY_WORKING=/tmp/rhcos-$VERSION-installer-auto
 
 KP_WEBSERVER=lb.rhv-upi.ocp.pwc.umbrella.local:8080
-KP_COREOS_IMAGE=rhcos-$VERSION-metal-bios.raw.gz
+KP_COREOS_IMAGE=rhcos-$VERSION-metal.raw.gz
 KP_BLOCK_DEVICE=sda
 
 if [ -d $DIRECTORY_MOUNT ] || [ -d $DIRECTORY_WORKING ] ; then
