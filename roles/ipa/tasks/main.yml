@@ -71,6 +71,7 @@
     ipa_host: "{{ ipa_hostname }}"
     ipa_user: "{{ ipa_username }}"
     ipa_pass: "{{ ipa_password }}"
+    validate_certs: "{{ ipa_validate_certs }}"
     state: present
   with_items:
     - api
@@ -85,17 +86,19 @@
     ipa_host: "{{ ipa_hostname }}"
     ipa_user: "{{ ipa_username }}"
     ipa_pass: "{{ ipa_password }}"
+    validate_certs: "{{ ipa_validate_certs }}"
     state: present
 
 - name: Create etcd-x Records
   ipa_dnsrecord:
     name: "{{ hostvars[item].etcd_name }}"
-    zone_name: "{{ base_domain }}"    
+    zone_name: "{{ base_domain }}"
     record_type: A
     record_value: "{{ hostvars[item].ip }}"
     ipa_host: "{{ ipa_hostname }}"
     ipa_user: "{{ ipa_username }}"
     ipa_pass: "{{ ipa_password }}"
+    validate_certs: "{{ ipa_validate_certs }}"
     state: present
   with_items:
     - "{{ groups[provision_group] }}"
