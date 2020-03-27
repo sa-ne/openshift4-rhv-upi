@@ -19,6 +19,9 @@
     - role: dhcpd
       tags:
         - dhcpd
+    - role: firewalld
+      tags:
+        - firewalld
     - role: haproxy
       tags:
         - haproxy
@@ -33,4 +36,4 @@
   roles:
    - role: boot-instances
      tags:
-        - boot-instances 
+       - boot-instances
