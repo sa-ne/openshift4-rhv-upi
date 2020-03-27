@@ -9,6 +9,7 @@ all:
     dhcp_server_subnet_mask: 255.255.255.0
     dhcp_server_subnet: 172.16.10.0
     load_balancer_ip: 172.16.10.114
+    ipa_validate_certs: yes
     installation_directory: /home/chris/git/openshift4-rhv-upi/local/install/rhv-upi
   children:
     webserver:
