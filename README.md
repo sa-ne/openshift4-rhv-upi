@@ -77,6 +77,7 @@ The following global variables will need to be modified (the default values are 
 |dhcp\_server\_subnet\_mask|Subnet mask assigned by DHCP server|
 |dhcp\_server\_subnet|IP Subnet used to configure dhcpd.conf|
 |load\_balancer\_ip|This IP address of your load balancer (the server that HAProxy will be installed on)|
+|ipa\_validate\_certs|Enable or disable validation of the certificates for your IdM server (default: `yes`)|
 |installation_directory|The directory that you will be using with `openshift-install` command for generating ignition files|
 
 For the individual node configuration, be sure to update the hosts in the `pg` hostgroup. Several parameters will need to be changed for _each_ host including `ip`, `storage_domain` and `network`. You can also specify `mac_address` for each of the VMs in its `network` section (if you don't, VMs will obtain their MAC address from cluster's MAC pool automatically). Match up your RHV environment with the inventory file.
@@ -208,7 +209,7 @@ KP_BLOCK_DEVICE=sda
 Running the script (make sure to do this as root) should produce similar output:
 
 ```console
-(rhv) 0 chris@umbrella.local@toaster:~ $ sudo ./iso-generator.sh 
+(rhv) 0 chris@umbrella.local@toaster:~ $ sudo ./iso-generator.sh
 mount: /tmp/rhcos-4.3.0-x86_64-installer: WARNING: device write-protected, mounted read-only.
 sending incremental file list
 README.md
@@ -274,7 +275,7 @@ The order of operations for the `provision.yml` playbook is as follows:
 	- Start bootstrap VM and wait for SSH
 	- Start master VMs and wait for SSH
 	- Start worker VMs and wait for SSH
-	
+
 Once the playbook completes (should several minutes) continue with the instructions.
 
 ### Skipping Portions of Automation
@@ -301,9 +302,9 @@ Run the following command to ensure the bootstrap process completes (be sure to 
 
 ```console
 $ ./openshift-install --dir=/home/chris/upi/rhv-upi wait-for bootstrap-complete
-INFO Waiting up to 30m0s for the Kubernetes API at https://api.rhv-upi.ocp.pwc.umbrella.local:6443... 
+INFO Waiting up to 30m0s for the Kubernetes API at https://api.rhv-upi.ocp.pwc.umbrella.local:6443...
 INFO API v1.13.4+f2cc675 up                       
-INFO Waiting up to 30m0s for bootstrapping to complete... 
+INFO Waiting up to 30m0s for bootstrapping to complete...
 INFO It is now safe to remove the bootstrap resources
 ```
 
