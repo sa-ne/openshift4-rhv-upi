@@ -76,6 +76,7 @@
     interface: "{{ item.1.interface }}"
     storage_domain: "{{ item.1.storage_domain }}"
     activate: true
+    timeout: 900
   tags:
     - disks
   with_subelements:

@@ -2,9 +2,9 @@
 
 # Run this script as root
 
-VERSION=4.3.0-x86_64
-ISO_SOURCE=/tmp/rhcos-$VERSION-installer.iso
-ISO_OUTPUT=/tmp/rhcos-$VERSION-installer-auto.iso
+VERSION=4.3.8-x86_64
+ISO_SOURCE=/tmp/rhcos-$VERSION-installer.x86_64.iso
+ISO_OUTPUT=/tmp/rhcos-$VERSION-installer.x86_64-auto.iso
 
 DIRECTORY_MOUNT=/tmp/rhcos-$VERSION-installer
 DIRECTORY_WORKING=/tmp/rhcos-$VERSION-installer-auto
