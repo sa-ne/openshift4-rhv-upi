@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: qemu-guest-agent
+  namespace: qemu-guest-agent
+spec:
+  selector:
+    matchLabels:
+      name: qemu-guest-agent
+  template:
+    metadata:
+      labels:
+        name: qemu-guest-agent
+    spec:
+      hostNetwork: true
+      hostPID: true
+      serviceAccountName: qga-service-account
+      containers:
+      - name: qemu-guest-agent
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["SYS_ADMIN"]
+          allowPrivilegeEscalation: true
+        image: quay.io/nasx/qemu-guest-agent:latest
+        command: ['/usr/bin/qemu-ga', '--verbose', '--method=virtio-serial', '--path=/dev/virtio-ports/org.qemu.guest_agent.0', '--blacklist=guest-file-open,guest-file-close,guest-file-read,guest-file-write,guest-file-seek,guest-file-flush,guest-exec,guest-exec-status']
+        volumeMounts:
+          - name: host-dev
+            mountPath: /dev
+          - name: host-rootfs
+            mountPath: /rootfs
+          - name: host-sys
+            mountPath: /sys
+          - name: host-etc
+            mountPath: /etc
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      - key: node.kubernetes.io/disk-pressure
+        operator: Exists
+        effect: NoSchedule
+      volumes:
+        - name: host-dev
+          hostPath:
+            path: /dev
+        - name: host-rootfs
+          hostPath:
+            path: /
+        - name: host-sys
+          hostPath:
+            path: /sys
+        - name: host-etc
+          hostPath:
+            path: /etc

@@ -1,0 +1,28 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    openshift.io/description: "Role-Based Access to SCCs for QEMU Guest Agent"
+  name: qga-privileged-user
+rules:
+- apiGroups:
+  - security.openshift.io 
+  resources:
+  - securitycontextconstraints 
+  verbs:
+  - use
+  resourceNames:
+  - privileged
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: qga-privileged-user
+subjects:
+- kind: ServiceAccount
+  name: qga-service-account
+roleRef:
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+  name: qga-privileged-user

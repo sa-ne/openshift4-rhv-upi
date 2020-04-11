@@ -318,7 +318,47 @@ Lastly, refer to the baremetal UPI documentation and complete [Logging into the 
 
 # Installing QEMU Guest Agent
 
-RHCOS includes the `open-vm-tools` package by default but does not include `qemu-guest-agent`. To work around this, we can install the `qemu-ga` binary and requisite configuration using a Machine Config. The following files were extracted from the `qemu-guest-agent` rpm, base64 encoded and added to the ignition portion of the Machine Config.
+RHCOS includes the `open-vm-tools` package by default but does not include `qemu-guest-agent`. To work around this, we can run the `qemu-ga` daemon via a container using a DaemonSet or by copying the `qemu-ga` binary and requisite configuration to RHCOS using a MachineConfig.
+
+## Option 1 - Installing QEMU Guest Agent using a DaemonSet
+
+*Note: The DaemonSet option is not completely working. Guest memory is not reported to RHV. This is a work in progress.*
+
+The Dockerfile used to build the container is included in the `qemu-guest-agent` directory in this git repository. You will need to download the latest `qemu-guest-agent` RPM from access.redhat.com and place it alongside the Dockerfile to successfully build the container. The container was built using buildah as follows:
+
+```console
+buildah bud -t qemu-guest-agent --format docker
+```
+
+However, building the container is for documentation purposes only. The DaemonSet is already configured to pull the `qemu-guest-agent` container from quay.io.
+
+To start the deployment we need to create the namespace, to do that run the following command:
+
+```console
+oc create -f qemu-guest-agent/0-namespace.yaml
+```
+
+Next we need to create the service account:
+
+```console
+oc create -f qemu-guest-agent/1-service-account.yaml
+```
+
+The pods will require the privileged SCC, so add the appropriate RBAC as follows:
+
+```console
+oc create -f qemu-guest-agent/2-rbac.yaml
+```
+
+Finally deploy the DaemonSet by running:
+
+```console
+oc create -f 3-daemonset.yaml
+```
+
+## Option 2 - Installing QEMU Guest Agent using MachineConfigs
+
+The following files were extracted from the `qemu-guest-agent` rpm, base64 encoded and added to the ignition portion of the Machine Config.
 
 * /etc/qemu-ga/fsfreeze-hook
 * /etc/sysconfig/qemu-ga
