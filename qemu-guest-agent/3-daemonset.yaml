@@ -27,12 +27,14 @@ spec:
         volumeMounts:
           - name: host-dev
             mountPath: /dev
-          - name: host-rootfs
-            mountPath: /rootfs
-          - name: host-sys
-            mountPath: /sys
-          - name: host-etc
-            mountPath: /etc
+          - name: host-sys-cpu
+            mountPath: /sys/devices/system/cpu
+          - name: host-sys-memory
+            mountPath: /sys/devices/system/memory
+          - name: host-etc-os-release
+            mountPath: /etc/os-release
+          - name: host-etc-redhat-release
+            mountPath: /etc/redhat-release
       tolerations:
       - key: node-role.kubernetes.io/master
         operator: Exists
@@ -44,12 +46,15 @@ spec:
         - name: host-dev
           hostPath:
             path: /dev
-        - name: host-rootfs
+        - name: host-sys-cpu
           hostPath:
-            path: /
-        - name: host-sys
+            path: /sys/devices/system/cpu
+        - name: host-sys-memory
           hostPath:
-            path: /sys
-        - name: host-etc
+            path: /sys/devices/system/memory
+        - name: host-etc-os-release
           hostPath:
-            path: /etc
+            path: /etc/os-release
+        - name: host-etc-redhat-release
+          hostPath:
+            path: /etc/redhat-release
