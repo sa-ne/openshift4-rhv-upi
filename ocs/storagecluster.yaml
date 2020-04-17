@@ -26,5 +26,5 @@ spec:
         volumeMode: Block
         resources:
           requests:
-            storage: 600Gi
+            storage: 1Ti
     portable: true

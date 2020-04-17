@@ -2,6 +2,11 @@
 
 # Run this script as root
 
+if [ `whoami` != "root" ] ; then
+   echo "Must be run as root!"
+   exit 1
+fi
+
 VERSION=4.3.8-x86_64
 ISO_SOURCE=/tmp/rhcos-$VERSION-installer.x86_64.iso
 ISO_OUTPUT=/tmp/rhcos-$VERSION-installer.x86_64-auto.iso
@@ -10,7 +15,7 @@ DIRECTORY_MOUNT=/tmp/rhcos-$VERSION-installer
 DIRECTORY_WORKING=/tmp/rhcos-$VERSION-installer-auto
 
 KP_WEBSERVER=lb.rhv-upi.ocp.pwc.umbrella.local:8080
-KP_COREOS_IMAGE=rhcos-$VERSION-metal.raw.gz
+KP_COREOS_IMAGE=rhcos-$VERSION-metal.x86_64.raw.gz
 KP_BLOCK_DEVICE=sda
 
 if [ -d $DIRECTORY_MOUNT ] || [ -d $DIRECTORY_WORKING ] ; then

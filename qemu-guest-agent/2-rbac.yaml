@@ -5,6 +5,7 @@ metadata:
   annotations:
     openshift.io/description: "Role-Based Access to SCCs for QEMU Guest Agent"
   name: qga-privileged-user
+  namespace: qemu-guest-agent
 rules:
 - apiGroups:
   - security.openshift.io 
@@ -19,6 +20,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: qga-privileged-user
+  namespace: qemu-guest-agent
 subjects:
 - kind: ServiceAccount
   name: qga-service-account

@@ -22,6 +22,7 @@ spec:
           capabilities:
             add: ["SYS_ADMIN"]
           allowPrivilegeEscalation: true
+          procMount: Unmasked
         image: quay.io/nasx/qemu-guest-agent:latest
         command: ['/usr/bin/qemu-ga', '--verbose', '--method=virtio-serial', '--path=/dev/virtio-ports/org.qemu.guest_agent.0', '--blacklist=guest-file-open,guest-file-close,guest-file-read,guest-file-write,guest-file-seek,guest-file-flush,guest-exec,guest-exec-status']
         volumeMounts:

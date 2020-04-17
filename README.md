@@ -161,7 +161,7 @@ $ sudo mkdir -p /var/www/html
 ```
 
 ```console
-$ sudo curl -o /var/www/html/rhcos-4.3.0-x86_64-metal.raw.gz https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/rhcos-4.3.0-x86_64-metal.raw.gz
+$ sudo curl -o /var/www/html/rhcos-4.3.8-x86_64-metal.x86_64.raw.gz https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/rhcos-4.3.8-x86_64-metal.x86_64.raw.gz
 ```
 
 Ignition files generated in the previous step will be copied to web server automatically as part of `httpd` role. If you intend to skip that role, copy bootstrap.ign, master.ign and worker.ign from your working directory to `/var/www/html` on your web server manually now.
@@ -516,7 +516,7 @@ $ oc create -f ocs/registry-cephfs-pvc.yaml
 To reconfigure the registry to use our new PVC, run the following:
 
 ```console
-$ oc patch configs.imageregistry.operator.openshift.io/cluster --type merge -p '{"spec":{"managementState":"Managed","storage":{"pvc":{"claim":"registry"}}}}''
+$ oc patch configs.imageregistry.operator.openshift.io/cluster --type merge -p '{"spec":{"managementState":"Managed","storage":{"pvc":{"claim":"registry"}}}}'
 ```
 
 
