@@ -41,10 +41,11 @@ All hostnames must follow the following format:
 * worker0.\<base domain\>
 * workerX.\<base domain\>
 
-## Noted UPI Installation Issues
+## UPI Installation Notes
 
 * Bootstrap SSL Certificate is only valid for 24 hours
 * etcd/master naming convention conforms to 0 based index (i.e. master0, master1, master2...not master1, master2, master3)
+* qemu-guest-agent is not included in RHCOS (instructions for installed daemonset provided below)
 
 # Installing
 
