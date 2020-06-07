@@ -7,7 +7,7 @@ if [ `whoami` != "root" ] ; then
    exit 1
 fi
 
-VERSION=4.3.8-x86_64
+VERSION=4.4.3-x86_64
 ISO_SOURCE=/tmp/rhcos-$VERSION-installer.x86_64.iso
 ISO_OUTPUT=/tmp/rhcos-$VERSION-installer.x86_64-auto.iso
 

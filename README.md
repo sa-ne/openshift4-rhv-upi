@@ -172,7 +172,7 @@ We will use a bootable ISO to install RHCOS on our virtual machines. We need to 
 
 __Kernel Parameters__
 
-Note these parameters are for reference only. Specify the appropriate values for your environment in the `iso-generator.sh` and run the script to generate an ISO specific to your environment.
+Note these parameters are for reference only. Specify the appropriate values for your environment in `util/iso-generator.sh` and run the script to generate an ISO specific to your environment.
 
 * coreos.inst=yes
 * coreos.inst.install\_dev=sda
@@ -209,7 +209,7 @@ KP_BLOCK_DEVICE=sda
 Running the script (make sure to do this as root) should produce similar output:
 
 ```console
-(rhv) 0 chris@umbrella.local@toaster:~ $ sudo ./iso-generator.sh
+(rhv) 0 chris@umbrella.local@toaster:~ $ sudo ./util/iso-generator.sh
 mount: /tmp/rhcos-4.3.0-x86_64-installer: WARNING: device write-protected, mounted read-only.
 sending incremental file list
 README.md
