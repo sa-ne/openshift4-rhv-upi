@@ -1,0 +1,26 @@
+- name: Configure OAuth LDAP Secret
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/oauth-ldap-secret.j2') }}"
+
+- name: Source CA Certificate
+  set_fact:
+    oauth_ldap_ca_cert_data: "{{ lookup('file', 'files/oauth-ldap-ca.crt') }}"
+
+- name: Configure OAuth LDAP CA ConfigMap
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/oauth-ldap-ca-config-map.j2') }}"
+
+- name: Update OAuth LDAP Configuration
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/oauth-ldap.j2') }}"
+
+- name: Create cluster-admin ClusterRoleBindings
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/cluster-admin.j2') }}"
+  loop: "{{ cluster_admin_users }}"
+  loop_control:
+    loop_var: user

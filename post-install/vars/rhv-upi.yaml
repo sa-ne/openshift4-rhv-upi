@@ -1,0 +1,104 @@
+nodes:
+  - name: ocs-node0.rhv-upi.ocp.pwc.umbrella.local
+    labels:
+      - "cluster.ocs.openshift.io/openshift-storage="
+      - "node-role.kubernetes.io/ocs="
+      - "node-role.kubernetes.io/worker-"
+  - name: ocs-node1.rhv-upi.ocp.pwc.umbrella.local
+    labels:
+      - "cluster.ocs.openshift.io/openshift-storage="
+      - "node-role.kubernetes.io/ocs="
+      - "node-role.kubernetes.io/worker-"
+  - name: ocs-node2.rhv-upi.ocp.pwc.umbrella.local
+    labels:
+      - "cluster.ocs.openshift.io/openshift-storage="
+      - "node-role.kubernetes.io/ocs="
+      - "node-role.kubernetes.io/worker-"
+  - name: infra-node0.rhv-upi.ocp.pwc.umbrella.local
+    labels:
+      - "node-role.kubernetes.io/infra="
+      - "node-role.kubernetes.io/worker-"
+  - name: infra-node1.rhv-upi.ocp.pwc.umbrella.local
+    labels:
+      - "node-role.kubernetes.io/infra="
+      - "node-role.kubernetes.io/worker-"
+  - name: infra-node2.rhv-upi.ocp.pwc.umbrella.local
+    labels:
+      - "node-role.kubernetes.io/infra="
+      - "node-role.kubernetes.io/worker-"
+operators:
+  - namespace:
+      metadata:
+        name: openshift-storage
+        labels:
+          openshift.io/cluster-monitoring: 'true'
+    operatorgroup:
+      metadata:
+        name: openshift-storage-operatorgroup
+        namespace: openshift-storage
+      spec:
+        targetNamespaces:
+          - openshift-storage
+    subscription:
+      metadata:
+        name: ocs-subscription
+        namespace: openshift-storage
+      spec:
+        channel: stable-4.4
+        name: ocs-operator
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+  - subscription:
+      metadata:
+        name: local-storage-operator
+        namespace: openshift-storage
+      spec:
+        channel: '4.4'
+        name: local-storage-operator
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+  - namespace:
+      metadata:
+        name: openshift-operators-redhat
+        labels:
+          openshift.io/cluster-monitoring: 'true'
+    operatorgroup:
+      metadata:
+        name: openshift-operators-redhat-operatorgroup
+        namespace: openshift-operators-redhat
+      spec: {}
+    subscription:
+      metadata:
+        generateName: 'elasticsearch-'
+        namespace: openshift-operators-redhat
+        name: elasticsearch-operator
+      spec:
+        channel: '4.4'
+        installPlanApproval: Automatic
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+        name: elasticsearch-operator
+  - namespace:
+      metadata:
+        name: openshift-logging
+        labels:
+          openshift.io/cluster-monitoring: "true"
+      spec:
+        nodeSelector:
+        node-role.kubernetes.io/infra: ''
+    operatorgroup:
+      metadata:
+        name: cluster-logging
+        namespace: openshift-logging
+      spec:
+        targetNamespaces:
+        - openshift-logging
+    subscription:
+      metadata:
+        name: cluster-logging
+        namespace: openshift-logging
+      spec:
+        channel: '4.4'
+        name: cluster-logging
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace

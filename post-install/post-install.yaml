@@ -1,0 +1,29 @@
+- name: OpenShift Cluster Post Install Tasks
+  hosts: localhost
+  vars_files:
+    - vars/main.yaml
+    - vault.yaml
+  tasks:
+    - name: Configure OAuth
+      include_role:
+        name: oauth-ldap
+      tags:
+        - oauth-ldap
+
+    - name: Label Nodes
+      include_role:
+        name: label-nodes
+      loop: "{{ nodes }}"
+      loop_control:
+        loop_var: nitem
+      tags:
+        - label-nodes
+
+    - name: Install Operators
+      include_role:
+        name: install-operators
+      loop: "{{ operators }}"
+      loop_control:
+        loop_var: oitem
+      tags:
+        - install-operators

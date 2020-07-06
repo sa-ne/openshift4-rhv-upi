@@ -1,0 +1,12 @@
+---
+oc_bin: "/home/chris/bin/oc"
+oc_kubeconfig: "/home/chris/upi/rhv-upi/auth/kubeconfig"
+
+oauth_ldap_ca_cert: /etc/ipa/ca.crt
+oauth_ldap_ca_cm_name: ca-config-map
+oauth_ldap_url: ldap://idm1.umbrella.local/cn=users,cn=accounts,dc=umbrella,dc=local?uid
+oauth_ldap_secret_name: ldap-secret
+oauth_ldap_provider_name: "Umbrella IdM"
+
+cluster_admin_users:
+  - chris

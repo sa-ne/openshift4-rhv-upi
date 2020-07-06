@@ -1,0 +1,9 @@
+# 4 spaces required in front of each line in ca.crt
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ oauth_ldap_ca_cm_name }}
+  namespace: openshift-config
+data:
+  ca.crt: |
+{{ oauth_ldap_ca_cert_data }}

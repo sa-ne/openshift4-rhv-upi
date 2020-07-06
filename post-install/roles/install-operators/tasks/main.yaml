@@ -1,0 +1,39 @@
+---
+- name: Debug Namespace Rendering
+  debug:
+    msg: "{{ lookup('template', 'templates/namespace.j2') }}"
+  when:
+    - oitem.namespace is defined
+
+- name: "Create Namespace {{ oitem.namespace.metadata.name }}"
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/namespace.j2') }}"
+  when:
+    - oitem.namespace is defined
+
+- name: Debug OperatorGroup Rendering
+  debug:
+    msg: "{{ lookup('template', 'templates/operatorgroup.j2') }}"
+  when:
+    - oitem.operatorgroup is defined
+
+- name: "Create OperatorGroup for Namespace {{ oitem.namespace.metadata.name }}"
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/operatorgroup.j2') }}"
+  when:
+    - oitem.operatorgroup is defined
+
+- name: Debug Subscription Rendering
+  debug:
+    msg: "{{ lookup('template', 'templates/subscription.j2') }}"
+  when:
+    - oitem.subscription is defined
+
+- name: "Create Subscription for Operator {{ oitem.subscription.spec.name }}"
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/subscription.j2') }}"
+  when:
+    - oitem.subscription is defined

@@ -1,0 +1,14 @@
+---
+- name: Debug
+  debug:
+    msg: "oc label node {{ nitem.name }} {{ label }}"
+  loop: "{{ nitem.labels }}"
+  loop_control:
+    loop_var: label
+
+- name: Label Node
+  command:
+    cmd: "{{ oc_bin }} --kubeconfig {{ oc_kubeconfig }} label node {{ nitem.name }} {{ label }} --overwrite"
+  loop: "{{ nitem.labels }}"
+  loop_control:
+    loop_var: label
