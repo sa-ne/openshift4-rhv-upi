@@ -45,6 +45,8 @@
     - bootstrap.ign
     - master.ign
     - worker.ign
+    - ocs.ign
+    - infra.ign
 
 - name: Restore SELinux Contexts in Document Root
   shell: restorecon -R /var/www/html

@@ -8,8 +8,12 @@
 - name: Startup (install) Bootstrap Node
   ovirt_vm:
     auth: "{{ ovirt_auth }}"
-    name: "bootstrap.{{ base_domain }}"
+    cluster: "{{ hostvars[item].rhv_cluster }}"
+    name: "{{ item }}.{{ base_domain }}"
     state: running
+  with_items:
+    - "{{ groups[provision_group] }}"
+  when: item is search("bootstrap")
 
 - name: Wait 30 Minutes for SSH on Bootstrap Node
   wait_for:
@@ -21,6 +25,7 @@
 - name: Startup (install) Master Nodes
   ovirt_vm:
     auth: "{{ ovirt_auth }}"
+    cluster: "{{ hostvars[item].rhv_cluster }}"
     name: "{{ item }}.{{ base_domain }}"
     state: running
   with_items:
@@ -40,6 +45,7 @@
 - name: Startup (install) Worker Nodes
   ovirt_vm:
     auth: "{{ ovirt_auth }}"
+    cluster: "{{ hostvars[item].rhv_cluster }}"
     name: "{{ item }}.{{ base_domain }}"
     state: running
   with_items:
@@ -55,6 +61,32 @@
   with_items:
     - "{{ groups[provision_group] }}"
   when: item is search("worker")
+
+- name: Startup (install) Other Nodes
+  ovirt_vm:
+    auth: "{{ ovirt_auth }}"
+    cluster: "{{ hostvars[item].rhv_cluster }}"
+    name: "{{ item }}.{{ base_domain }}"
+    state: running
+  with_items:
+    - "{{ groups[provision_group] }}"
+  when:
+    - item is not search("worker")
+    - item is not search("bootstrap")
+    - item is not search("master")
+
+- name: Wait 30 Minutes for SSH on Other Nodes
+  wait_for:
+    host: "{{ hostvars[item].ip }}"
+    port: 22
+    sleep: 10
+    timeout: 1800
+  with_items:
+    - "{{ groups[provision_group] }}"
+  when:
+    - item is not search("worker")
+    - item is not search("bootstrap")
+    - item is not search("master")
 
 - name: Revoke the SSO token
   ovirt_auth:

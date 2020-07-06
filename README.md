@@ -318,7 +318,7 @@ INFO It is now safe to remove the bootstrap resources
 Once this openshift-install command completes successfully, login to the load balancer and comment out the references to the bootstrap server in `/etc/haproxy/haproxy.cfg`. There should be two references, one in the backend configuration `backend_22623` and one in the backend configuration `backend_6443`. Alternativaly, you can just run this utility playbook to achieve the same:
 
 ```console
-ansible-playbook -i inventory.yml bootstrap_cleanup.yml
+ansible-playbook -i inventory.yml bootstrap-cleanup.yml
 ```
 
 Lastly, refer to the baremetal UPI documentation and complete [Logging into the cluster](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.4/html-single/installing_on_bare_metal/index#cli-logging-in-kubeadmin_installing-bare-metal) and all remaining steps.

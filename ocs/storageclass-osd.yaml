@@ -10,9 +10,9 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-            - worker0.rhv-upi.ocp.pwc.umbrella.local
-            - worker1.rhv-upi.ocp.pwc.umbrella.local
-            - worker2.rhv-upi.ocp.pwc.umbrella.local
+            - ocs-node0.rhv-upi.ocp.pwc.umbrella.local
+            - ocs-node1.rhv-upi.ocp.pwc.umbrella.local
+            - ocs-node2.rhv-upi.ocp.pwc.umbrella.local
   storageClassDevices:
     - storageClassName: "localstorage-ocs-osd-sc"
       volumeMode: Block 
